@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valley of the Sun II — Player Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ─────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ── THEME VARIABLES ────────────────────────────── */
+:root{
+  --bg:#f0ede8;--surface:#faf8f5;--surface2:#f0ece5;
+  --border:#d8d2c8;--border-strong:#b8b0a4;
+  --text:#1c1a18;--text-mid:#5a5650;--text-dim:#9a9490;
+  --shadow-color:rgba(0,0,0,.07);
+
+  --passive:#2d6a4f;--passive-bg:#edf7f2;--passive-border:#b7e0cb;
+  --instinct:#7b3f00;--instinct-bg:#fdf3ea;--instinct-border:#f0ceaa;
+  --mask:#1a1a2e;--mask-bg:#ededf5;--mask-border:#c8c8e0;
+  --no-shadow:#909090;--no-shadow-bg:#f5f5f5;--no-shadow-border:#e0e0e0;
+  --stat-pos:#2d6a4f;--stat-pos-bg:#edf7f2;--stat-pos-border:#b7e0cb;
+  --stat-neg:#c0392b;--stat-neg-bg:#fdf0ef;--stat-neg-border:#f0b8b4;
+  --stat-zero:#888;--stat-zero-bg:#f0ede8;--stat-zero-border:#d8d2c8;
+
+  /* section accents */
+  --acc-f:#9b2335;--acc-f-bg:#fdf2f4;--acc-f-border:#e8a0ac;--acc-f-dim:#7d1c2b;
+  --acc-c:#3d3270;--acc-c-bg:#f2f0fa;--acc-c-border:#b0a8e0;--acc-c-dim:#2a2252;
+  --acc-s:#1f6b5a;--acc-s-bg:#f0f8f5;--acc-s-border:#90d0c0;--acc-s-dim:#155040;
+
+  --tab-active:var(--text);--tab-inactive:var(--text-dim);
+}
+[data-theme="dark"]{
+  --bg:#0f0e0d;--surface:#1a1918;--surface2:#252220;
+  --border:#2e2b28;--border-strong:#3e3a36;
+  --text:#e8e4de;--text-mid:#a09890;--text-dim:#6a6460;
+  --shadow-color:rgba(0,0,0,.25);
+
+  --passive:#4aaa80;--passive-bg:#0e2018;--passive-border:#1a4030;
+  --instinct:#c87020;--instinct-bg:#201208;--instinct-border:#402810;
+  --mask:#9090d0;--mask-bg:#101018;--mask-border:#202038;
+  --no-shadow:#606060;--no-shadow-bg:#1a1a1a;--no-shadow-border:#2a2a2a;
+  --stat-pos:#4aaa80;--stat-pos-bg:#0e2018;--stat-pos-border:#1a4030;
+  --stat-neg:#e05050;--stat-neg-bg:#200808;--stat-neg-border:#401010;
+  --stat-zero:#606060;--stat-zero-bg:#1a1918;--stat-zero-border:#2e2b28;
+
+  --acc-f:#d05070;--acc-f-bg:#200810;--acc-f-border:#602030;--acc-f-dim:#f07090;
+  --acc-c:#8070d0;--acc-c-bg:#100820;--acc-c-border:#302060;--acc-c-dim:#a090e0;
+  --acc-s:#30b890;--acc-s-bg:#081810;--acc-s-border:#185040;--acc-s-dim:#50d8b0;
+}
+
+/* ── BASE ──────────────────────────────────────── */
+html,body{min-height:100%;background:var(--bg);transition:background .2s,color .2s;}
+body{font-family:'DM Sans',sans-serif;color:var(--text);}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
+}
+#app{position:relative;z-index:1;display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── HEADER ─────────────────────────────────────── */
+#header{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 20px;display:flex;align-items:center;gap:12px;
+  height:56px;flex-shrink:0;position:sticky;top:0;z-index:100;
+}
+#menu-btn{
+  display:none;background:transparent;border:1px solid var(--border);
+  color:var(--text-mid);border-radius:5px;padding:5px 9px;font-size:16px;
+  cursor:pointer;transition:all .16s;line-height:1;flex-shrink:0;
+}
+#menu-btn:hover{border-color:var(--border-strong);color:var(--text);}
+
+/* tabs */
+#tabs{display:flex;align-items:center;gap:2px;flex:1;}
+.tab{
+  font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  padding:6px 14px;border-radius:5px;cursor:pointer;transition:all .18s;
+  background:transparent;border:1px solid transparent;color:var(--text-dim);
+  white-space:nowrap;
+}
+.tab:hover{color:var(--text);background:var(--surface2);}
+.tab.active-f{color:var(--acc-f);background:var(--acc-f-bg);border-color:var(--acc-f-border);}
+.tab.active-c{color:var(--acc-c);background:var(--acc-c-bg);border-color:var(--acc-c-border);}
+.tab.active-s{color:var(--acc-s);background:var(--acc-s-bg);border-color:var(--acc-s-border);}
+
+/* active persona badge */
+#active-badge{
+  display:none;align-items:center;gap:6px;
+  background:var(--acc-f-bg);border:1px solid var(--acc-f-border);
+  border-radius:20px;padding:4px 11px 4px 7px;flex-shrink:0;
+}
+#active-badge.show{display:flex;}
+#active-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--acc-f);flex-shrink:0;}
+#active-badge span{font-size:10px;font-weight:600;color:var(--acc-f);white-space:nowrap;}
+
+/* subtitle + dark toggle */
+#header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+#header-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap;}
+#dark-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--border);
+  background:transparent;cursor:pointer;font-size:14px;display:flex;align-items:center;
+  justify-content:center;transition:all .18s;flex-shrink:0;
+}
+#dark-btn:hover{border-color:var(--border-strong);background:var(--surface2);}
+
+/* ── LAYOUT ─────────────────────────────────────── */
+#layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 56px);}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+#sidebar{
+  width:220px;min-width:220px;background:var(--surface);
+  border-right:1px solid var(--border);display:flex;flex-direction:column;
+  overflow:hidden;flex-shrink:0;transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+#sb-inner{flex:1;overflow-y:auto;padding:10px 8px;}
+#sb-inner::-webkit-scrollbar{width:3px;}
+#sb-inner::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.sb-section{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--text-dim);font-weight:600;padding:8px 8px 4px;}
+.sb-filters{padding:4px 6px 6px;display:flex;flex-direction:column;gap:4px;}
+.sb-filter-row{display:flex;gap:3px;flex-wrap:wrap;}
+.pill{
+  font-size:8.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+  padding:3px 8px;border-radius:3px;cursor:pointer;transition:all .16s;
+  border:1px solid var(--border);background:transparent;color:var(--text-dim);
+}
+.pill:hover{border-color:var(--border-strong);color:var(--text);}
+.pill.on-f{background:var(--acc-f-bg);border-color:var(--acc-f-border);color:var(--acc-f);}
+.pill.on-c{background:var(--acc-c-bg);border-color:var(--acc-c-border);color:var(--acc-c);}
+.pill.on-s{background:var(--acc-s-bg);border-color:var(--acc-s-border);color:var(--acc-s);}
+.sb-card{
+  display:flex;align-items:center;gap:7px;padding:6px 9px;
+  border-radius:6px;cursor:pointer;transition:background .13s;
+  border:1px solid transparent;margin-bottom:2px;
+}
+.sb-card:hover{background:var(--surface2);border-color:var(--border);}
+.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--border);}
+.sb-name{font-size:11.5px;font-weight:500;color:var(--text);flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* active persona in sidebar */
+.sb-card.active-persona{background:var(--acc-f-bg);border-color:var(--acc-f-border);}
+.sb-card.active-persona .sb-dot{background:var(--acc-f);}
+.sb-card.active-persona .sb-name{color:var(--acc-f);font-weight:600;}
+/* type pip colors */
+.pip-action{background:var(--acc-c)!important;}
+.pip-bonus{background:var(--passive)!important;}
+.pip-reaction{background:var(--instinct)!important;}
+.pip-trap{background:var(--mask)!important;}
+.pip-projenitor{background:var(--acc-s)!important;}
+.pip-fused{background:var(--acc-s-dim)!important;}
+.pip-gate{background:#c09000!important;}
+
+#sb-close{display:none;}
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:49;}
+.sb-divider{height:1px;background:var(--border);margin:6px 8px;}
+
+/* ── MAIN ────────────────────────────────────────── */
+#main{flex:1;overflow-y:auto;padding:20px;}
+#main::-webkit-scrollbar{width:4px;}
+#main::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+#grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+  gap:14px;max-width:1300px;margin:0 auto;
+}
+
+/* ── TILES (shared) ─────────────────────────────── */
+.tile{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:border-color .18s,box-shadow .18s;
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.tile:hover{border-color:var(--border-strong);box-shadow:0 4px 16px var(--shadow-color);}
+.tile-bar{height:3px;display:none;}
+.tile.active-tile{border-width:2px;}
+.tile.active-tile .tile-bar{display:block;}
+.tile.active-tile.f-tile{border-color:var(--acc-f-border);box-shadow:0 0 0 3px rgba(155,35,53,.08);}
+.tile.active-tile.f-tile .tile-bar{background:var(--acc-f);}
+.tile-head{padding:13px 15px 9px;}
+.tile-super{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);font-weight:600;margin-bottom:3px;}
+.tile-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--text);line-height:1.15;letter-spacing:-.2px;}
+.tile-quote{font-style:italic;font-size:11.5px;color:var(--text-mid);margin-top:4px;line-height:1.5;}
+.tile-badges{display:flex;flex-wrap:wrap;gap:4px;padding:0 15px 9px;}
+.badge{font-size:9px;font-weight:600;letter-spacing:.3px;padding:2px 8px;border-radius:3px;}
+.badge-action{background:var(--acc-c-bg);color:var(--acc-c);border:1px solid var(--acc-c-border);}
+.badge-bonus{background:var(--passive-bg);color:var(--passive);border:1px solid var(--passive-border);}
+.badge-reaction{background:var(--instinct-bg);color:var(--instinct);border:1px solid var(--instinct-border);}
+.badge-trap{background:var(--mask-bg);color:var(--mask);border:1px solid var(--mask-border);}
+.badge-level{background:var(--surface2);color:var(--text-mid);border:1px solid var(--border);}
+.badge-projenitor{background:var(--acc-s-bg);color:var(--acc-s);border:1px solid var(--acc-s-border);}
+.badge-fused{background:var(--acc-s-bg);color:var(--acc-s-dim);border:1px solid var(--acc-s-border);}
+.badge-gate{background:#fdf8e0;color:#8a6800;border:1px solid #e8d880;}
+[data-theme="dark"] .badge-gate{background:#1a1600;color:#c0a030;border:1px solid #3a3000;}
+.badge-pos-harm{background:var(--passive-bg);color:var(--passive);border:1px solid var(--passive-border);}
+.badge-neg-harm{background:var(--stat-neg-bg);color:var(--stat-neg);border:1px solid var(--stat-neg-border);}
+.badge-no-harm{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border);}
+/* stat pips */
+.stat-pips{display:flex;flex-wrap:wrap;gap:4px;padding:0 15px 9px;}
+.stat-pip{font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:3px;}
+.sp-pos{color:var(--stat-pos);background:var(--stat-pos-bg);border:1px solid var(--stat-pos-border);}
+.sp-neg{color:var(--stat-neg);background:var(--stat-neg-bg);border:1px solid var(--stat-neg-border);}
+.sp-zero{color:var(--stat-zero);background:var(--stat-zero-bg);border:1px solid var(--stat-zero-border);}
+/* ability rows */
+.ability-rows{padding:0 15px 10px;display:flex;flex-direction:column;gap:5px;}
+.ab-row{display:flex;align-items:center;gap:7px;}
+.ab-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+.ab-icon.passive{background:var(--passive-bg);color:var(--passive);}
+.ab-icon.instinct{background:var(--instinct-bg);color:var(--instinct);}
+.ab-icon.shadow{background:var(--mask-bg);color:var(--mask);}
+.ab-icon.no-shadow{background:var(--no-shadow-bg);color:var(--no-shadow);}
+.ab-label{font-size:11px;font-weight:500;color:var(--text-mid);}
+/* tile footer */
+.tile-footer{padding:8px 15px 12px;border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:8px;}
+.drive-group .drive-lbl{font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+.drive-group .drive-txt{font-size:11px;color:var(--text-mid);font-style:italic;line-height:1.4;margin-top:1px;}
+.active-crown{display:none;align-items:center;background:var(--acc-f);border-radius:10px;padding:3px 8px;}
+.active-crown span{font-size:8px;font-weight:700;color:#fff;letter-spacing:.5px;text-transform:uppercase;}
+.tile.active-tile .active-crown{display:flex;}
+/* crystal/gate tile body */
+.tile-body{padding:4px 15px 12px;font-size:12px;color:var(--text-mid);line-height:1.6;}
+
+/* ── MODAL ───────────────────────────────────────── */
+#overlay{
+  position:fixed;inset:0;background:rgba(10,9,8,.72);backdrop-filter:blur(6px);
+  z-index:200;display:none;align-items:flex-start;justify-content:center;
+  padding:20px 16px;overflow-y:auto;
+}
+#overlay.open{display:flex;}
+#modal{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  max-width:640px;width:100%;margin:auto;position:relative;overflow:hidden;
+  box-shadow:0 24px 64px rgba(0,0,0,.2);
+}
+#modal-bar{height:4px;display:none;}
+#modal.modal-f #modal-bar{display:block;background:var(--acc-f);}
+#modal.modal-c #modal-bar{display:block;background:var(--acc-c);}
+#modal.modal-s #modal-bar{display:block;background:var(--acc-s);}
+#modal.modal-gate #modal-bar{display:block;background:#c09000;}
+.m-head{padding:22px 26px 14px;}
+.mh-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap;}
+.mh-super{font-size:8.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);font-weight:600;}
+.mh-active-tag{display:none;background:var(--acc-f);color:#fff;font-size:8.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:10px;}
+#modal.active-modal .mh-active-tag{display:block;}
+.m-name{font-family:'DM Serif Display',serif;font-size:26px;color:var(--text);line-height:1.1;letter-spacing:-.3px;}
+.m-sub{font-style:italic;font-size:13.5px;color:var(--text-mid);margin-top:5px;line-height:1.55;}
+.m-badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;}
+.m-body{padding:4px 26px 18px;display:flex;flex-direction:column;gap:12px;}
+/* ability blocks */
+.ab-block{border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+.ab-block-head{display:flex;align-items:center;gap:9px;padding:9px 12px;border-bottom:1px solid var(--border);}
+.ab-block-head.passive{background:var(--passive-bg);border-bottom-color:var(--passive-border);}
+.ab-block-head.instinct{background:var(--instinct-bg);border-bottom-color:var(--instinct-border);}
+.ab-block-head.shadow{background:var(--mask-bg);border-bottom-color:var(--mask-border);}
+.ab-block-head.no-shadow{background:var(--no-shadow-bg);border-bottom-color:var(--no-shadow-border);}
+.ab-block-head.cartomancer{background:var(--acc-c-bg);border-bottom-color:var(--acc-c-border);}
+.ab-block-head.stone{background:var(--acc-s-bg);border-bottom-color:var(--acc-s-border);}
+.ab-block-head.gate{background:#fdf8e0;border-bottom-color:#e8d880;}
+[data-theme="dark"] .ab-block-head.gate{background:#1a1600;border-bottom-color:#3a3000;}
+.ab-bigicon{width:26px;height:26px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.ab-bigicon.passive{background:#d0f0e0;color:var(--passive);}
+.ab-bigicon.instinct{background:#fce0c0;color:var(--instinct);}
+.ab-bigicon.shadow{background:#d0d0f0;color:var(--mask);}
+.ab-bigicon.no-shadow{background:#e0e0e0;color:var(--no-shadow);}
+.ab-bigicon.cartomancer{background:var(--acc-c-bg);color:var(--acc-c);}
+.ab-bigicon.stone{background:var(--acc-s-bg);color:var(--acc-s);}
+.ab-bigicon.gate{background:#fef0a0;color:#806000;}
+[data-theme="dark"] .ab-bigicon.gate{background:#2a2000;color:#c0a030;}
+.ab-title-col{flex:1;}
+.ab-type-label{font-size:8.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:var(--text-dim);}
+.ab-block-head.passive .ab-type-label{color:var(--passive);}
+.ab-block-head.instinct .ab-type-label{color:var(--instinct);}
+.ab-block-head.shadow .ab-type-label{color:var(--mask);}
+.ab-block-head.cartomancer .ab-type-label{color:var(--acc-c);}
+.ab-block-head.stone .ab-type-label{color:var(--acc-s);}
+.ab-block-head.gate .ab-type-label{color:#806000;}
+[data-theme="dark"] .ab-block-head.gate .ab-type-label{color:#c0a030;}
+.ab-block-name{font-size:12.5px;font-weight:600;color:var(--text);}
+.ab-usage{font-size:9px;font-weight:500;color:var(--text-dim);background:rgba(0,0,0,.06);padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;}
+[data-theme="dark"] .ab-usage{background:rgba(255,255,255,.06);}
+.ab-block-body{padding:11px 12px;font-size:13px;color:var(--text-mid);line-height:1.75;}
+.ab-block-body p+p{margin-top:7px;}
+.ab-block-body strong{color:var(--text);font-weight:600;}
+.ab-block-body em{color:var(--text-dim);}
+.ab-noshadow{padding:11px 12px;font-size:13px;font-style:italic;color:var(--no-shadow);line-height:1.6;}
+/* behavior/drive blocks */
+.behavior-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 12px;}
+.block-lbl{font-size:8.5px;letter-spacing:2px;text-transform:uppercase;font-weight:600;color:var(--text-dim);margin-bottom:5px;}
+.block-body{font-size:13px;color:var(--text-mid);line-height:1.7;font-style:italic;}
+.drive-block{background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;padding:11px 12px;display:flex;gap:9px;}
+.drive-icon{font-size:15px;flex-shrink:0;margin-top:1px;}
+.drive-inner .block-lbl{margin-bottom:3px;}
+.drive-inner .block-body{font-style:normal;color:var(--text);}
+/* stat block */
+.m-stats{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+/* modal footer */
+.m-foot{padding:12px 26px;border-top:1px solid var(--border);display:flex;gap:7px;justify-content:flex-end;flex-wrap:wrap;}
+.btn{font-size:10.5px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .18s;border:1px solid var(--border);background:var(--surface2);color:var(--text-mid);}
+.btn:hover{border-color:var(--border-strong);color:var(--text);}
+.btn-activate{background:var(--acc-f);border-color:var(--acc-f);color:#fff!important;}
+.btn-activate:hover{background:var(--acc-f-dim)!important;}
+.btn-deactivate{background:var(--acc-f-bg);border-color:var(--acc-f-border);color:var(--acc-f)!important;}
+.btn-deactivate:hover{background:var(--acc-f-bg);}
+.m-x{position:absolute;top:12px;right:12px;width:27px;height:27px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .18s;}
+.m-x:hover{border-color:var(--border-strong);color:var(--text);}
+
+/* ── TOAST ───────────────────────────────────────── */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:var(--text);color:var(--bg);font-size:10.5px;font-weight:600;letter-spacing:.5px;
+  padding:8px 16px;border-radius:6px;transition:transform .25s;z-index:300;white-space:nowrap;pointer-events:none;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ── MOBILE ──────────────────────────────────────── */
+@media(max-width:660px){
+  #sidebar{position:fixed;top:0;left:0;bottom:0;z-index:50;transform:translateX(-100%);box-shadow:6px 0 24px rgba(0,0,0,.12);}
+  #sidebar.open{transform:translateX(0);}
+  #sb-overlay.active{display:block;}
+  #sb-close{display:flex;align-items:center;justify-content:center;width:26px;height:26px;background:transparent;border:1px solid var(--border);color:var(--text-dim);border-radius:50%;font-size:11px;cursor:pointer;transition:all .16s;margin-left:auto;margin-bottom:6px;}
+  #menu-btn{display:flex;}
+  #header-sub{display:none;}
+  .tab{font-size:9.5px;padding:5px 9px;}
+  #main{padding:12px;}
+  #grid{grid-template-columns:1fr;gap:10px;}
+  .m-name{font-size:20px;}
+  .m-head{padding:18px 18px 12px;}
+  .m-body{padding:4px 18px 14px;}
+  .m-foot{padding:11px 18px;}
+}
+@media(max-width:400px){
+  .tab{font-size:8.5px;padding:4px 7px;}
+  #active-badge{display:none!important;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sb-overlay"></div>
+
+  <header id="header">
+    <button id="menu-btn">☰</button>
+    <div id="tabs">
+      <button class="tab" data-tab="f">The Fractured</button>
+      <button class="tab" data-tab="c">The Cartomancer</button>
+      <button class="tab" data-tab="s">The Stonekeeper</button>
+    </div>
+    <div id="active-badge"><div class="dot"></div><span id="badge-name">—</span></div>
+    <div id="header-right">
+      <span id="header-sub">Valley of the Sun II</span>
+      <button id="dark-btn" title="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <div id="layout">
+    <aside id="sidebar">
+      <div id="sb-inner">
+        <button id="sb-close">✕</button>
+        <div id="sb-section" class="sb-section">Personas</div>
+        <div class="sb-filters" id="sb-filters" style="display:none"></div>
+        <div id="sb-list"></div>
+      </div>
+    </aside>
+    <main id="main"><div id="grid"></div></main>
+  </div>
+</div>
+
+<div id="overlay">
+  <div id="modal">
+    <div id="modal-bar"></div>
+    <button class="m-x" id="mx">✕</button>
+    <div class="m-head">
+      <div class="mh-top">
+        <span class="mh-super" id="m-super"></span>
+        <span class="mh-active-tag">Active</span>
+      </div>
+      <div class="m-name" id="m-name"></div>
+      <div class="m-sub" id="m-sub"></div>
+      <div class="m-stats" id="m-stats"></div>
+      <div class="m-badges" id="m-badges"></div>
+    </div>
+    <div class="m-body" id="m-body"></div>
+    <div class="m-foot" id="m-foot">
+      <button class="btn" id="m-activate" style="display:none">Set as Active</button>
+      <button class="btn" id="m-close">Close</button>
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// ── FRACTURED DATA ──────────────────────────────────
+// ═══════════════════════════════════════════════════
+const PERSONAS = [
+// {id:'professional',archetype:'The Professional',name:'The Assassin',flavor:'"The job isn\'t personal. It never was."',stats:[{s:'STR',v:'+2'},{s:'DEX',v:'+2'},{s:'WIS',v:'−1'},{s:'CHA',v:'−1'}],passive:{name:'Hunker Down',usage:'Passive',text:'Any form of cover — even improvised — grants <strong>+2 AC</strong> in addition to its normal benefit. A stack of books, a market stall, a turned-over table. The Professional finds the angle.'},instinct:{name:'Instinct Memory',usage:'Once per Turn',text:'When you make an attack from <strong>cover, hiding, or an elevated position</strong>, that attack deals bonus damage equal to your <strong>Proficiency Bonus + DEX modifier</strong>.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'Mark a creature as <strong>Contracted</strong>. For 10 minutes, your attacks against that target <strong>ignore damage Resistance and half-cover</strong>. Both parties feel the mark before it lands.'},behavior:'Clipped speech. No wasted words. Evaluates every room as a kill zone. Refers to others by physical description.',drive:'Complete the current objective cleanly.'},
+// {id:'survivor',archetype:'The Survivor',name:'Hypervigilance Incarnate',flavor:'"Everyone wants something. Figure that out first."',stats:[{s:'DEX',v:'+2'},{s:'WIS',v:'+2'},{s:'STR',v:'−1'},{s:'CON',v:'−1'}],passive:{name:'Threat Assessment',usage:'Passive + 1/Short Rest',text:'You <strong>cannot be surprised</strong>. Once per Short Rest, when you would be hit by an attack, use your Reaction to <strong>impose disadvantage</strong> on that attack roll.'},instinct:{name:'Instinct Memory',usage:'Passive',text:'<strong>Opportunity attacks against you are made with disadvantage.</strong> When you take the Disengage action, you may also use Unravel as part of the same action.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'You know if any creature within <strong>60 feet intends you harm</strong> before they act. For one round you <strong>know the initiative order before it\'s rolled</strong>. Your first attack roll this combat is automatically a <strong>critical hit</strong>.'},behavior:'Sits with back to walls. Counts exits. Interrupts conversations to note dangers nobody else has clocked. Trusts no one immediately.',drive:'Identify and neutralize the biggest threat in the current situation.'},
+// {id:'meek',archetype:'The Meek',name:'The Lost Child',flavor:'"She\'s just a little girl. Somebody should help her."',stats:[{s:'CHA',v:'+2'},{s:'STR',v:'−1'},{s:'DEX',v:'−1'},{s:'CON',v:'−1'}],passive:{name:'Lost Child',usage:'1/Short Rest',text:'As an Action, one creature within 30 feet makes a <strong>WIS save (DC 8 + Prof + CHA)</strong>. On a failure, they are <strong>Compelled to protect you</strong> for 1 hour — Reaction to impose disadvantage on attacks against you; will not willingly harm you. Ends if Tobe attacks them.'},instinct:{name:'Instinct Memory',usage:'Reaction',text:'When a creature moves within 5 feet to attack you, trigger Lost Child as a free action, or <strong>impose disadvantage</strong> on that attack once per Short Rest if unavailable.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'As a Reaction to a hit, before damage rolls, you <strong>vanish</strong> and reappear within <strong>15 feet</strong>. An illusory image receives the attack instead — you take no damage.<br><br>If the image would drop Tobe to 0 HP or receives a critical hit, it collapses as a lifeless body. The attacker makes a <strong>WIS save (DC 8 + Prof + CHA)</strong> or is <strong>Stunned</strong> until end of their next turn. Image dissipates at start of Tobe\'s next turn.'},behavior:'Goes quiet. Makes herself small. Looks lost rather than afraid. This may or may not be genuine.',drive:'Find someone willing to take responsibility for her, even briefly.'},
+// {id:'cherub',archetype:'The Cherub',name:'Unearned Confidence',flavor:'"Obviously I\'m supposed to be here. Why are you looking at me like that?"',stats:[{s:'CHA',v:'+2'},{s:'INT',v:'+1'},{s:'STR',v:'−2'}],passive:{name:'This Is Me Now',usage:'1/Long Rest',text:'As a Bonus Action, comprehend what nearby adults are discussing and <strong>insert yourself as an authority</strong>. Friendly/neutral creatures cannot dismiss you without engaging. Roll Persuasion or Deception <strong>at advantage</strong> to convince them of one claim.'},instinct:{name:'Instinct Memory',usage:'1/Short Rest',text:'Take the <strong>Help action as a Bonus Action</strong>. The creature you Help also gains advantage on their next Ability Check — because you said something unexpectedly useful.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'For the next <strong>10 minutes</strong>, you automatically know when any creature within 30 feet is <strong>lying, withholding information, or misrepresenting their intentions</strong>. Passive and requires no check.<br><br>Once during this window, point at a specific creature and ask the GM <strong>one yes or no question</strong> about what they are concealing. The GM must answer honestly.'},behavior:'Walks in like she owns the place. Asks clarifying questions about things she shouldn\'t know. Completely unbothered.',drive:'Be taken seriously by someone who initially dismissed her.'},
+// {id:'devotee',archetype:'The Devotee',name:"Mask's Echo",flavor:'"The contract isn\'t broken. It was never broken."',stats:[{s:'CHA',v:'+3'},{s:'DEX',v:'+1'},{s:'CON',v:'−2'},{s:'WIS',v:'−2'}],passive:{name:'Claimed Attribute',usage:'3/Long Rest',text:'As a Reaction, after any creature within 30 feet makes a d20 roll using an ability modifier, <strong>steal that modifier</strong>. For 10 minutes (Concentration), that creature\'s modifier for that ability is treated as <strong>+0</strong> for all purposes. Grants Tobe no benefit — it simply ceases to exist for the target.'},instinct:{name:'Instinct Memory',usage:'1/Short Rest',text:'When a creature within 30 feet uses their Reaction, you may <strong>steal it as a Reaction of your own</strong> — taking the same Reaction yourself if physically possible, or simply denying it. The original Reaction is expended regardless.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'As an Action, don the <strong>Visage of Mask</strong> (Concentration, 1 minute). <strong>Immune to all damage and cannot be healed.</strong> At the start of each of your turns, every creature within 10 feet loses HP equal to your Proficiency Bonus — no save, no distinction. You gain temp HP equal to total drained, redistributable as a free action.<br><br><em>Adds 3 tokens to the GM pool.</em>'},behavior:'Something changes in her posture. Voice drops. Smiles without warmth. This is not Tobe talking.',drive:'Establish or enforce a contract. Extract something owed.'},
+// {id:'ghost',archetype:'The Ghost',name:'A Thousand Exits',flavor:'"You want to find me? Good luck. I\'ve had centuries of practice."',stats:[{s:'DEX',v:'+3'},{s:'CHA',v:'−2'}],passive:{name:'Slip Away',usage:'1/Short Rest',text:'While active, you leave <strong>no biological evidence</strong> of your presence — no fingerprints, scent, hair, footprints, or consistent physical description. Mundane tracking is impossible. Creatures have <strong>disadvantage on Perception checks</strong> to detect you. Magical divination must beat your <strong>Passive Deception score</strong> or fail.'},instinct:{name:'Instinct Memory',usage:'Passive',text:'When <strong>out of line of sight</strong> of the creature that last targeted you, immediately move up to <strong>60 feet</strong> to any space also out of their line of sight. No opportunity attacks, no sound.'},shadow:null,shadowNote:'No Shadow. Mask couldn\'t find purchase in this one. She was built to leave no trace — and she left none of him in her either.',behavior:'Economical movement. Always near a door. Disappears during conversations, reappears when useful. Faintly amused.',drive:'Leave the current location without being seen or remembered.'},
+// {id:'doll',archetype:'The Doll',name:'Nothing Left to Break',flavor:'"Pain is just information. I stopped listening to it a long time ago."',stats:[{s:'CON',v:'+3'},{s:'CHA',v:'−2'},{s:'All others',v:'−1'}],passive:{name:'Porcelain',usage:'Passive',text:'Disadvantage on all CHA checks. Cannot speak above a whisper. Any creature beginning its turn within <strong>10 feet</strong> makes a <strong>WIS save (DC 8 + Prof + CHA)</strong> or become <strong>Unsettled</strong> — cannot benefit from Help or flanking. <em>Affects allies.</em>'},instinct:{name:'Instinct Memory',usage:'Passive',text:'Do <strong>not lose Concentration when taking damage</strong>. Cannot be moved by forced movement. While you have not voluntarily moved since the start of your last turn, <strong>attacks against you have disadvantage</strong>. Attacking a creature that didn\'t perceive you as a threat deals <strong>bonus damage equal to Proficiency Bonus</strong>.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'As an Action, every creature within <strong>30 feet that can see you</strong> makes a <strong>DEX save (DC 8 + Prof + CHA)</strong> or become <strong>Rooted</strong> — cannot move. At end of each of their turns they may repeat the save. <em>The Doll does not distinguish between friend and enemy.</em>'},behavior:'Flat affect. Doesn\'t blink at the right times. Processes threats with clinical detachment.',drive:'Endure whatever is currently happening without responding to it emotionally.'},
+// {id:'daredevil',archetype:'The Daredevil',name:'Death Is Temporary',flavor:'"I\'ve died before. Several times, probably. It didn\'t stick."',stats:[{s:'STR',v:'+2'},{s:'DEX',v:'+2'},{s:'CON',v:'+2'},{s:'WIS',v:'−3'}],passive:{name:'Reckless Guardian',usage:'Passive + Reaction',text:'<strong>Cannot take the Dodge action.</strong> When an ally within 10 feet would be hit, use your Reaction to <strong>become the target</strong> of that attack, moving up to 10 feet to interpose. No check required.'},instinct:{name:'Instinct Memory',usage:'Passive',text:'Within 5 feet of <strong>two or more enemies simultaneously</strong>: advantage on all attack rolls. Attacking a creature of <strong>Large size or larger</strong>: bonus damage equal to Proficiency Bonus.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'Bonus Action: activate <strong>Devil\'s Circuit</strong> for 4 turns. At start of each of your turns, dart between enemies, moving through enemy spaces freely. One melee attack (half damage) against each enemy you pass within 5 feet of — each may make an OA against you.<br><br><strong>Turn 1:</strong> 20ft &nbsp;·&nbsp; <strong>Turn 2:</strong> 15ft &nbsp;·&nbsp; <strong>Turn 3:</strong> 10ft &nbsp;·&nbsp; <strong>Turn 4:</strong> 5ft'},behavior:'Grinning. Genuinely excited by danger. Makes reckless tactical decisions with total confidence.',drive:'Take the most dangerous available action.'},
+// {id:'split',archetype:'The Split',name:'Pure Chance',flavor:'"Heads I win. Tails is also interesting."',stats:[{s:'All stats',v:'±0'}],passive:{name:'Coin Flip',usage:'Once per Turn',text:'Before any d20 roll, declare <strong>"whatever happens, happens."</strong> Roll the die twice and choose which result to use — but the discarded result applies to Tobe in some minor way. The Split is always aware of both outcomes simultaneously.'},instinct:{name:'Instinct Memory',usage:'Once per Turn',text:'Before an attack roll, declare <strong>All In</strong>. Flip a coin. <strong>Heads:</strong> maximum damage regardless of the roll. <strong>Tails:</strong> attack auto-misses and the target makes one free attack against you — not using their Reaction.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest',text:'After any d20 roll you can see, declare you are <strong>flipping the die to its opposite face</strong> (20↔1, 16↔5, 3↔18). Flip a coin.<br><br><strong>Heads:</strong> the roll is replaced. Cannot be countered by Legendary Resistance or rerolls.<br><strong>Tails:</strong> the flip fails. You suffer the consequence of the opposite face applied to Tobe. No nearby hostile? Tobe takes <strong>2d10 Psychic damage</strong>.'},behavior:'Unnervingly calm about catastrophic outcomes. Finds bad coin flips as funny as good ones.',drive:'Introduce genuine randomness into a situation that felt settled.'},
+// {id:'hollow',archetype:'The Hollow',name:'What Remains',flavor:'"..."',stats:[{s:'CON',v:'+3'},{s:'All others',v:'−1'}],passive:{name:'Nothing Left to Lose',usage:'Passive',text:'<strong>Immune to Charm, Fear, and Psychic damage.</strong> Cannot be healed. Cannot speak meaningfully. Cannot be voluntarily ended via Composure — The Hollow holds until the narrative releases it. Only mechanical exit: <strong>Fracture Ward</strong>.'},instinct:{name:'Instinct Memory',usage:'Passive — on damage',text:'The first time each turn Tobe takes damage, a <strong>Persona Switch immediately triggers</strong>. Draw the top card blindly. The incoming Persona\'s <strong>Mask\'s Shadow fires immediately and for free</strong>, even if already used today.<br><br><em>Attacking The Hollow is the trigger. What comes next is not The Hollow\'s fault.</em>'},shadow:null,shadowNote:'No Shadow. There is nothing here for Mask to reach.',behavior:'Does not speak unless necessary. Minimal movement. Other characters may find Tobe suddenly unrecognizable — like nobody is home.',drive:'Endure.'},
+// {id:'archivist',archetype:'The Archivist',name:'Centuries of Reference',flavor:'"I\'ve been here before. Not here exactly, but close enough."',stats:[{s:'INT',v:'+3'},{s:'WIS',v:'+1'},{s:'CHA',v:'−1'}],passive:{name:'Living Encyclopedia',usage:'Passive + 1/Short Rest',text:'Proficient in <strong>all Intelligence-based checks</strong>. Once per Short Rest, declare you have encountered this exact situation before — the GM must provide <strong>one genuinely useful piece of information</strong>.'},instinct:{name:'Instinct Memory',usage:'1/Short Rest',text:'When a creature within 30 feet makes an attack roll against an ally, use your Reaction to <strong>impose disadvantage</strong> on that attack.'},shadow:{name:"Mask's Shadow",usage:'Passive — after any roll',text:'After any d20 roll you can see, <strong>replace the result with any d20 roll that has already occurred earlier in this session</strong>, before modifiers are applied. History doesn\'t repeat itself — but the Archivist remembers enough of it that sometimes it doesn\'t have to.'},behavior:'References events, places, and people with eerie specificity. Has opinions about things she shouldn\'t have opinions about.',drive:'Categorize and understand something genuinely new.'},
+// {id:'caretaker',archetype:'The Caretaker',name:'Someone Had to Keep Them Alive',flavor:'"Hold still. I\'ve done this before."',stats:[{s:'WIS',v:'+2'},{s:'CON',v:'+1'},{s:'DEX',v:'−1'}],passive:{name:'Steady Hands',usage:'Bonus Action',text:'As a Bonus Action, <strong>stabilize a dying creature without a Medicine check</strong>, or restore <strong>1d6 + WIS modifier HP</strong> to a creature within touch range.'},instinct:{name:'Instinct Memory',usage:'1/Short Rest',text:'When an allied creature within 10 feet would <strong>drop to 0 HP</strong>, use your Reaction to have them <strong>drop to 1 HP instead</strong>. The Caretaker will get to them in time. She always does.'},shadow:{name:"Mask's Shadow",usage:'Bonus Action, Concentration',text:'Attune to the flow of healing. While Concentration holds, whenever any creature you can see <strong>regains HP from any source</strong> — regeneration, spells, potions, natural recovery — you may <strong>intercept up to half that recovery</strong> (rounded down) and redirect it to any creature within 30 feet. The original target still receives the remaining half.<br><br><em>Mask has always understood that recovery is just another form of acquisition.</em>'},behavior:'Assesses injuries before greeting people. Keeps track of everyone\'s HP. Gets frustrated when the party splits.',drive:'Ensure nobody she\'s responsible for takes damage this encounter.'},
+// {id:'knife',archetype:'The Knife',name:'First and Last',flavor:'"I know where to press. Everyone has a place."',stats:[{s:'DEX',v:'+3'},{s:'INT',v:'+1'},{s:'STR',v:'−1'},{s:'WIS',v:'−1'}],passive:{name:'First and Last',usage:'Passive',text:'<strong>Advantage and 2d6 + Proficiency bonus damage</strong> on the first attack if the target hasn\'t acted. That creature becomes your <strong>Mark</strong> — no opportunity attacks from them, bonus DEX modifier damage when no ally is within 5 feet.'},instinct:{name:'Instinct Memory',usage:'1/Short Rest',text:'Make a melee attack. On a hit, the target\'s <strong>movement speed drops to 0</strong> until end of their next turn and they <strong>lose their Reaction</strong>.'},shadow:{name:"Mask's Shadow",usage:'1/Long Rest, Concentration',text:'Your Mark <strong>cannot recover HP from any source</strong> and <strong>cannot use Legendary Resistances</strong> while this Concentration holds. Mask\'s contract supersedes their protections.'},behavior:'Economy of motion. No wasted gestures. Has been assessing weaknesses since she walked in. Disconcertingly patient.',drive:'Identify and exploit the most efficient vulnerability in the current situation.'},
+// {id:'grudge',archetype:'The Grudge',name:"Mask's Anger, Wearing Tobe's Face",flavor:'"I remember every single one of them."',stats:[{s:'STR',v:'+2'},{s:'CON',v:'+2'},{s:'CHA',v:'−2'},{s:'WIS',v:'−1'}],passive:{name:'Settled Score',usage:'1/Short Rest',text:'Name a creature as your <strong>Grudge</strong> at the start of combat or when they deal damage to you or an ally. One Grudge at a time.<br><br>Attacks against your Grudge deal <strong>bonus damage equal to the number of rounds the Grudge has been active</strong> (1 on round 1, increasing by 1 each round). Not because you got stronger — because you\'ve been thinking about it.'},instinct:{name:'Instinct Memory',usage:'Passive while Grudge active',text:'<strong>Advantage on all attacks against your Grudge.</strong> <strong>Disadvantage on all attacks against anyone else.</strong> The Grudge doesn\'t leave room for anything else.'},shadow:{name:"Mask's Shadow",usage:'Bonus Action, 10 minutes',text:'Mask makes the Grudge formal. For 10 minutes, whenever your Grudge takes damage from <strong>any source</strong>, they take <strong>additional Psychic damage equal to your current Grudge bonus</strong>.<br><br>Additionally, your Grudge <strong>cannot disengage, flee, or teleport</strong> without a <strong>CHA save (DC 8 + Prof + CHA)</strong>. On a failure, movement ends immediately.'},behavior:'Very still. Does not break eye contact with the Grudge target. Other Personas occasionally surface memories of this one. It is older than most of them.',drive:'Make the creature that hurt her regret it specifically.'},
+];
+
+// ═══════════════════════════════════════════════════
+// ── CARTOMANCER DATA ────────────────────────────────
+// ═══════════════════════════════════════════════════
+const SYM_MAP={major:'☽',pentacles:'⬟',wands:'✦',cups:'◎',swords:'✧'};
+const SUIT_FULL={major:'Major Arcana',pentacles:'Suit of Pentacles · Earth',wands:'Suit of Wands · Fire',cups:'Suit of Cups · Water',swords:'Suit of Swords · Air'};
+const TYPE_FULL={action:'Action',bonus:'Bonus Action',reaction:'Reaction',trap:'Trap Card'};
+
+function numCard(suit,num,level,type,text,flavor,conc=false){
+  const nm={1:'Ace',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10'};
+  const sc=suit.charAt(0).toUpperCase()+suit.slice(1);
+  return{id:`${suit}-${num}`,name:`${nm[num]} of ${sc}`,arcana:suit,level,type,conc,flavor,
+    keywords:nm[num],text:text.replace(/\bx\b/g,String(num))};
+}
+const pLow=[1,2,3,4].map(n=>numCard('pentacles',n,1,'action',`Choose one target within 30ft. Deal <strong>xd4 Bludgeoning, Piercing, or Slashing damage</strong> (your choice) without an attack roll.`,`"You don't feel the need to forgive. You feel the need to get even."`));
+const pHigh=[5,6,7,8,9,10].map(n=>numCard('pentacles',n,13,'action',`Choose <strong>4 targets</strong> within 60ft. Each makes a <strong>STR save</strong>. Failure: <strong>xd6 + INT mod</strong> Bludgeoning/Piercing/Slashing and pulled <strong>x×2ft.</strong> toward you. Success: half damage, not moved.`,`"Your power is an earthquake that cannot be quelled. Even at the detriment of your health."`));
+const wLow=[1,2,3,4].map(n=>numCard('wands',n,1,'bonus',`Add <strong>xd6 Fire damage</strong> to the next attack — yours or a touched ally's. This attack can crit.`,`"The Ephemeral Oasis infuses you with enough passion and fire to last a lifetime."`));
+const wHigh=[5,6,7,8,9,10].map(n=>numCard('wands',n,13,'bonus',`<em>Concentration.</em> For 1 minute, shed 30ft. bright light and deal <strong>x Fire + INT mod</strong> to hostiles starting/ending their turn within 10ft. Allies in this light gain <strong>+INT mod</strong> to attack and damage rolls.`,`"You begin to feel the burn of ambition like an astral fire surrounds you."`,true));
+const cLow=[1,2,3,4].map(n=>numCard('cups',n,3,'bonus',`Heal yourself or an ally within 30ft. by <strong>xd6 HP</strong>.`,`"The reach of your empathy spreads far and wide."`));
+const cHigh=[5,6,7,8,9,10].map(n=>numCard('cups',n,13,'action',`Hostiles in a <strong>15ft. cone</strong> make a DEX save or take <strong>xd6 Cold damage</strong> (half on success). Failures also have speed reduced by <strong>x×2ft.</strong> Allies in the cone are <strong>healed xd6 HP</strong>.`,`"You are swept up into a hurricane of emotions. Oftentimes, you lash out to protect yourself."`));
+const sLow=[1,2,3,4].map(n=>numCard('swords',n,3,'trap',`<em>Trap.</em> After a hit roll is made against you, reduce it by <strong>1d4 + x</strong>. If the attack now fails, the attacker takes <strong>xd6 Thunder damage</strong>.`,`"A cold and calculated demeanor washes over you."`));
+const sHigh=[5,6,7,8,9,10].map(n=>numCard('swords',n,13,'trap',`<em>Trap.</em> If you take <strong>20+ damage in one turn</strong>, all enemies within 30ft. make a CON save or take <strong>xd10 Thunder damage</strong> (half on success). Failures are <strong>Deafened + Silenced</strong> for 1 minute and lose concentration.`,`"Your sharpened wit is a double-edged sword."`));
+
+const TAROT_MANUAL=[
+// {id:'fool',name:'The Fool',arcana:'major',level:1,type:'trap',conc:false,keywords:'Innocence, New Beginnings',flavor:'"The start of your journey begins with you taking a single step."',text:`Trigger at the beginning of an enemy's turn. They make a <strong>WIS save</strong>. On failure they <strong>lose a random action</strong> this turn.<br><br>Roll d4: <strong>1</strong>=Movement &nbsp;<strong>2</strong>=Reaction &nbsp;<strong>3</strong>=Bonus Action &nbsp;<strong>4</strong>=Action<br><br><em>If drawn in opening hand, plays itself face down automatically.</em>`},
+// {id:'hermit',name:'The Hermit',arcana:'major',level:1,type:'action',conc:false,keywords:'Contemplation, Truth, Isolation',flavor:'"You may only help others by learning how to help yourself."',text:`Acts as one use of <strong>Leomund\'s Tiny Hut</strong> (Evocation).<br><br>At level 13, may instead cast <strong>Mordenkainen\'s Magnificent Mansion</strong>.`},
+// {id:'chariot',name:'The Chariot',arcana:'major',level:1,type:'action',conc:false,keywords:'Direction, Control, Willpower',flavor:'"If you feel as if you lack direction, look forward, and the future will guide you."',text:`Acts as one use of <strong>Misty Step</strong> (Conjuration).<br><br>At level 7, may instead cast <strong>Dimension Door</strong>.`},
+// {id:'wheel',name:'Wheel of Fortune',arcana:'major',level:1,type:'reaction',conc:false,keywords:"Fate, Change, What's to Come",flavor:'"Never be afraid of fate. Change what you can, embrace what you cannot."',text:`When you attempt a check or attack roll, before rolling, roll a d20.<br><br><strong>1–10:</strong> automatic <strong>failure</strong>. &nbsp;<strong>11–20:</strong> automatic <strong>success</strong>.<br><br>May also <strong>Special Summon</strong> this card from your deck as part of this reaction.`},
+// {id:'hierophant',name:'The Hierophant',arcana:'major',level:1,type:'bonus',conc:false,keywords:'Conformity, Morality, Ethics',flavor:'"God can be found in the most silent of hymns."',text:`Touch any object. For 1 minute it becomes a <strong>holy totem</strong> shedding 10ft. warm light. Hostile <strong>Fiends/Undead</strong> inside take <strong>2 PD Radiant</strong>; friendly creatures are <strong>healed 2 PD HP</strong>.<br><br><em>If The High Priestess is in hand, play both as one bonus action.</em>`},
+// {id:'lovers',name:'The Lovers',arcana:'major',level:1,type:'action',conc:true,keywords:'Relationships, Dichotomy, Union',flavor:'"The ability to love is the only power worth fighting for."',text:`Touch a willing ally and mark them as your <strong>paramour</strong>. For 1 hour, you both always know each other's direction and may speak telepathically.<br><br>While within 1 mile, either may use an action to <strong>teleport to the other</strong>. Concentration ends immediately after.`},
+// {id:'sun',name:'The Sun',arcana:'major',level:1,type:'trap',conc:false,keywords:'Success, Happiness, Positivity',flavor:'"The light of success blinds those eclipsed by negativity."',text:`When a hostile <strong>fails an attack roll against you</strong>, emit a flash in a <strong>30ft. cone</strong>. Hostiles make a <strong>STR save</strong> or become <strong>Blinded</strong>. Those who fail take <strong>Radiant damage = 2× cards in discard pile</strong>.`},
+// {id:'moon',name:'The Moon',arcana:'major',level:3,type:'reaction',conc:false,keywords:'Intuition, Illusions, Secrets',flavor:'"Trust your instincts, the world may lie."',text:`If you <strong>fail an Insight (WIS) check</strong>, use your reaction to <strong>reroll</strong> it.<br><br>May also <strong>Special Summon</strong> this card from your deck as part of this reaction.`},
+// {id:'priestess',name:'The High Priestess',arcana:'major',level:3,type:'bonus',conc:false,keywords:'Introspection, Intuition, Higher Power',flavor:'"Soft is the mind of the faithless."',text:`Read a humanoid you can see. You immediately learn three things:<br><br><strong>The Id</strong> — Primitive instincts and carnal desires.<br><strong>The Ego</strong> — How realistically achievable the Id is.<br><strong>The Superego</strong> — Their moral/ethical standing and willingness to act.<br><br><em>If The Hierophant is in hand, play both as one bonus action.</em>`},
+// {id:'justice',name:'Justice',arcana:'major',level:3,type:'action',conc:false,keywords:'Law, Karma, Honesty',flavor:'"Ignorance is bliss, though bliss is frequently deceitful."',text:`Acts as one use of <strong>Zone of Truth</strong> (Enchantment).<br><br>At level 13, may instead cast <strong>Truth Revealed</strong>.`},
+// {id:'star',name:'The Star',arcana:'major',level:3,type:'action',conc:false,keywords:'Inspiration, Faith, Renewal',flavor:'"You take a leap of faith, though you need not take it blindly."',text:`Acts as one use of <strong>Divination</strong>.<br><br>Special Summon at any time via a 10-minute reading. May only retrieve from discard <strong>once per long rest</strong>.`},
+// {id:'death',name:'Death',arcana:'major',level:3,type:'trap',conc:false,keywords:'Change, Release, Transformation',flavor:'"Those who embrace death are the very people who are spared by it."',text:`If damage would drop you to <strong>0 HP</strong>, fall to <strong>1 HP</strong> instead.<br><br>If you reach your next turn without healing or damage, recover <strong>PD equal to your proficiency bonus</strong>.`},
+// {id:'hanged',name:'The Hanged Man',arcana:'major',level:7,type:'reaction',conc:false,keywords:'Contemplation, Uncertainty, Sacrifice',flavor:'"Self-sacrifice is not only a form of loyalty but a form of trust."',text:`When an ally takes damage from a hostile non-player source, <strong>take the damage for them</strong>.<br><br>After damage is dealt, shuffle your discard and return <strong>INT mod</strong> random cards to your hand.`},
+// {id:'temperance',name:'Temperance',arcana:'major',level:7,type:'bonus',conc:false,keywords:'Tranquility, Serenity, Harmony',flavor:'"The calm and gentle hand will bring balance."',text:`If you attack this turn, your <strong>next two weapon attacks</strong> gain a bonus equal to <strong>2× INT modifier</strong>. Half is <strong>Radiant</strong>, half is <strong>Necrotic</strong>.`},
+// {id:'emperor',name:'The Emperor',arcana:'major',level:7,type:'bonus',conc:true,keywords:'Authority, Focus, Stability',flavor:'"You are control made flesh. The apex of authority."',text:`While active, no hostile within 30ft. can <strong>move toward you</strong>.<br><br>Shares concentration with The Empress.<br><br><em>If both Emperor and Empress are in hand, Special Summon <strong>The Lovers</strong> for free.</em>`},
+// {id:'empress',name:'The Empress',arcana:'major',level:7,type:'bonus',conc:true,keywords:'Fertility, Nurturing, Motherhood',flavor:'"You are both nature and nurture. The femininity divine."',text:`While active, no hostile within 30ft. can <strong>move away from you</strong>.<br><br>Shares concentration with The Emperor.<br><br><em>If both Empress and Emperor are in hand, Special Summon <strong>The Lovers</strong> for free.</em>`},
+// {id:'world',name:'The World',arcana:'major',level:9,type:'action',conc:false,keywords:'Achievement, Fulfilment, Wholeness',flavor:'"You summit the mountain and stand victorious."',text:`Roll a <strong>d20 twice</strong> and record both results. For 1 hour, you may replace any check or attack roll — yours, an ally's, or a hostile's — with either number. Instantaneous, no additional action.`},
+// {id:'magician',name:'The Magician',arcana:'major',level:9,type:'action',conc:true,keywords:'Manifestation, Creation, Willpower',flavor:'"Manifest your destiny as you are the only one that can."',text:`Pull one creature from the Ephemeral Oasis via one Conjuration spell:<br>• <strong>Find Greater Steed</strong><br>• <strong>Summon Elemental</strong><br>• <strong>Summon Aberration</strong><br>• <strong>Summon Construct</strong><br><br>Remains until concentration drops or it dies; turns to ash.`},
+// {id:'strength-c',name:'Strength',arcana:'major',level:9,type:'bonus',conc:false,keywords:'Confidence, Compassion, Inner Strength',flavor:'"Strength is your bond as you share your courage with others."',text:`Mark a creature as your <strong>ward</strong>. While within 30ft. of them they gain:<br>• <strong>Heroism</strong> (Enchantment)<br>• <strong>Dispel Evil and Good</strong> (Abjuration)<br><br>Your ward uses your <strong>Tarot Save DC</strong> for any saves caused by this card.`},
+// {id:'judgement',name:'Judgement',arcana:'major',level:13,type:'reaction',conc:false,keywords:'Truth, Clarity, Consequence',flavor:'"You think yourself the archangel bringing divine truth to a deaf congregation."',text:`When a hostile fails a save, force a <strong>CHA saving throw</strong> as a reaction. On failure, staged petrification begins — new CHA save each turn, DC +1 per round. Succeeding ends all effects.<br><br><strong>Stage 0</strong> — Speed halved. &nbsp;<strong>Stage 1</strong> — Speed 0, no reactions.<br><strong>Stage 2</strong> — No hand/foot actions. &nbsp;<strong>Stage 3</strong> — Blinded, Deafened, Silenced.<br><strong>Stage 4</strong> — Fully Petrified.`},
+// {id:'devil',name:'The Devil',arcana:'major',level:13,type:'trap',conc:false,keywords:'Obsession, Powerlessness, Oppression',flavor:'"You drown yourself in the river of obsession."',text:`Choose a triggering event (must be within 5ft. of target). Once triggered, <strong>lose any amount of HP</strong>. Target makes a <strong>WIS save</strong> or takes <strong>Force damage equal to HP lost</strong> (half on success).`},
+// {id:'tower',name:'Tower',arcana:'major',level:13,type:'action',conc:false,keywords:'Chaos, Upheaval, Destruction',flavor:'"Invite chaos. Save yourself."',text:`Touch a target and make an <strong>opposed CON check</strong>. The <strong>loser drops to half their current HP</strong>.<br><br><em>Optionally discard the top 10 cards first — the loser drops to <strong>1 HP</strong> instead.</em>`},
+// Court cards
+// {id:'page-p',name:'Page of Pentacles',arcana:'pentacles',level:1,type:'reaction',conc:false,keywords:'Ambition, Opportunity',flavor:'"Your innate desire can be covetous and dangerous."',text:`When a hostile enters/leaves your threatened area, have them make a <strong>DEX save</strong>. Failure: <strong>difficult terrain</strong> within 10ft.; hostiles moving through take <strong>1d6 Bludgeoning/Piercing/Slashing</strong> until end of next turn.`},
+// {id:'knight-p',name:'Knight of Pentacles',arcana:'pentacles',level:1,type:'trap',conc:false,keywords:'Responsibility, Dedication',flavor:'"You\'ve become burdened with the curse of responsibility."',text:`When an ally is attacked, trigger to <strong>take the damage for them</strong>. Afterwards, regain <strong>one spent Precognition Die</strong> and gain <strong>temp HP equal to 2 PD + CON mod</strong>.`},
+// {id:'queen-p',name:'Queen of Pentacles',arcana:'pentacles',level:7,type:'bonus',conc:false,keywords:'Pragmatism, Abundance',flavor:'"Being pragmatic and practical is second nature to you."',text:`Instantly <strong>swap a held item</strong> with an ally you can see within <strong>60ft.</strong>`},
+// {id:'king-p',name:'King of Pentacles',arcana:'pentacles',level:7,type:'action',conc:true,keywords:'Wealth, Leadership',flavor:'"What is abundant and plentiful is meant to be shared."',text:`Duplicate a held item <strong>worth ≤ 25gp</strong> — the copy lasts 1 hour. Detected by Detect Magic / True Sight. Maintain concentration for the full duration and it becomes <strong>permanent</strong>.`},
+// {id:'page-w',name:'Page of Wands',arcana:'wands',level:1,type:'bonus',conc:false,keywords:'Exploration, Discovery',flavor:'"The light you shed can show the good that lies in darkness."',text:`Reveal any <strong>arcane glyphs, wards, or magical traps</strong> within a <strong>50ft. area</strong>.`},
+// {id:'knight-w',name:'Knight of Wands',arcana:'wands',level:1,type:'reaction',conc:false,keywords:'Action, Fearlessness',flavor:'"You are a blazing furnace that laughs in the face of danger."',text:`When you or an ally fails a save against <strong>Frightened</strong>, use this card to <strong>succeed that save</strong>.<br><br>May also <strong>Special Summon</strong> this card from your deck as part of this reaction.`},
+// {id:'queen-w',name:'Queen of Wands',arcana:'wands',level:7,type:'action',conc:true,keywords:'Charisma, Confidence',flavor:'"The sole obstruction in your mission to spread joy is the wall of adversaries."',text:`Touch a flat surface (max 10ft. thick) and create a <strong>flaming door</strong> teleporting you to the other side (5×10ft., lasts 10 minutes). Hostiles entering take <strong>4d12 Fire</strong> and catch fire.`},
+// {id:'king-w',name:'King of Wands',arcana:'wands',level:7,type:'trap',conc:false,keywords:'Leadership, Vision',flavor:'"Oftentimes, the best leaders have to make the hardest calls."',text:`Elect to <strong>fail a saving throw</strong> to trigger this Trap. All allies within 50ft. gain <strong>Advantage on their next save</strong>. Afterwards, heal <strong>3 PD</strong>.`},
+// {id:'page-c',name:'Page of Cups',arcana:'cups',level:3,type:'trap',conc:false,keywords:'Intuition, Creativity',flavor:'"You tend to stay positive and keep others calm."',text:`When an ally fails a <strong>DEX check or save</strong>, trigger: they <strong>reroll</strong> and add your <strong>INT modifier</strong> to the result.`},
+// {id:'knight-c',name:'Knight of Cups',arcana:'cups',level:3,type:'action',conc:true,keywords:'Romance, Imagination',flavor:'"The world can be heaven if you let it be."',text:`Choose up to <strong>8 willing creatures</strong>. For 1 hour (concentration), all gain <strong>immunity to Charmed and Frightened</strong>.`},
+// {id:'queen-c',name:'Queen of Cups',arcana:'cups',level:9,type:'reaction',conc:false,keywords:'Compassion, Empathy',flavor:'"Compassion is your strongest instinct. Follow it while you can."',text:`When caught in a magical AoE, reduce the damage for <strong>you and all allies inside</strong> by <strong>PD equal to your proficiency bonus</strong>.<br><br>May also <strong>Special Summon</strong> this card from your deck as part of this reaction.`},
+// {id:'king-c',name:'King of Cups',arcana:'cups',level:9,type:'bonus',conc:false,keywords:'Wisdom, Diplomacy',flavor:'"Listening is the key to resolving conflict."',text:`Make an <strong>INT saving throw</strong>. On success, ask the DM one question about a current <strong>puzzle, document, or physical object</strong>. The DM must answer truthfully, though not necessarily fully.`},
+// {id:'page-s',name:'Page of Swords',arcana:'swords',level:3,type:'action',conc:true,keywords:'Curiosity, Vigilance',flavor:'"You begin to bear witness to your surroundings."',text:`For 1 minute:<br>• Passive Perception <strong>+5</strong><br>• See through <strong>invisibility and illusions</strong><br>• All CHA checks with <strong>Advantage</strong><br>• All weapon attacks deal +<strong>1d6 Thunder damage</strong>`},
+// {id:'knight-s',name:'Knight of Swords',arcana:'swords',level:3,type:'bonus',conc:false,keywords:'Action, Drive',flavor:'"You find yourself taking charge when no one else is willing."',text:`Until start of your next turn: first attack you and all allies make has <strong>Advantage</strong> and deals <strong>+2d12 Thunder</strong>. All allies' <strong>speed doubles</strong>.`},
+// {id:'queen-s',name:'Queen of Swords',arcana:'swords',level:9,type:'trap',conc:false,keywords:'Clarity, Truth',flavor:'"The truth and the truth alone shall set you free."',text:`When a <strong>lie, slight, or con</strong> is made against you, trigger this Trap (from hand or in play). The creature makes a <strong>CHA save</strong> or is <strong>compelled to reveal the truth</strong>.`},
+// {id:'king-s',name:'King of Swords',arcana:'swords',level:9,type:'reaction',conc:false,keywords:'Intellect, Authority',flavor:'"The pinnacle of intellect has one person upon its precipice. You."',text:`When you fail an <strong>INT check or save</strong>, reroll and add one roll of your <strong>PD</strong> to the result.`},
+];
+
+const ARCANA_ORDER={major:0,pentacles:1,wands:2,cups:3,swords:4};
+const ALL_TAROT=[...TAROT_MANUAL,...pLow,...pHigh,...wLow,...wHigh,...cLow,...cHigh,...sLow,...sHigh]
+  .sort((a,b)=>a.level-b.level||ARCANA_ORDER[a.arcana]-ARCANA_ORDER[b.arcana]||a.name.localeCompare(b.name));
+
+// ═══════════════════════════════════════════════════
+// ── STONEKEEPER DATA ─────────────────────────────────
+// ═══════════════════════════════════════════════════
+const CRYSTALS=[
+// {id:'sandstone-p',name:'Sandstone',variant:'Projenitor',harm:'none',shards:2,action:'Action',brief:'Creates an exploding obelisk of difficult terrain.',text:`Choose a point within 30ft. and create a <strong>5ft. wide × 10ft. tall sandstone obelisk</strong>. For 1 minute, the obelisk creates a <strong>10ft. sphere of difficult terrain</strong> centered on itself. If a creature ends its turn or movement within this sphere, it is pulled to the center as the obelisk <strong>explodes — Stunning</strong> the creature until end of its next turn. Afterwards, you may roll a d8 to open a random Chakra Gate.`},
+// {id:'sandstone-f',name:'Sandstone',variant:'Fused',harm:'none',shards:12,action:'Passive',brief:'Grants burrowing movement and sandstone obelisks.',text:`<strong>Sand Swim.</strong> Burrow speed equal to half movement (nearest 5). While burrowed: complete cover and Blinded. Creates a sandstone obelisk at point of entry (max 3).<br><br><strong>Slow Sand.</strong> Speed reduced by half when not on natural ground (Dirt, Sand, Grass).<br><br><strong>Sandstone Implosion. (Recharge 5-6)</strong> Force a sandstone obelisk to implode. All creatures inside make a <strong>DEX save</strong> or take <strong>32 (7d8) Piercing damage</strong> (half on success).<br><br>Once per long rest, roll a d8 to open a random Chakra Gate.`},
+// {id:'grape-p',name:'Grape Agate',variant:'Projenitor',harm:'none',shards:4,action:'Action',brief:'Transforms an object into a bundle of grapes.',text:`Take a <strong>non-organic Tiny to Small object</strong> and magically transform it into <strong>grapes with approximately the same mass</strong>. The grapes remain until eaten or expire after 1d4 days, then the item harmlessly rematerializes within 5ft.<br><br>If all grapes are consumed by the same creature, the item <strong>reconstitutes inside their body</strong> during digestion. Afterwards, you may open your <strong>Third Eye or Crown Gates</strong>.`},
+// {id:'grape-f',name:'Grape Agate',variant:'Fused',harm:'none',shards:10,action:'Passive',brief:'Grants Plant type, infinite grape juice, and water-walking.',text:`While held, you gain the <strong>Plant creature type</strong>.<br><br><strong>Grape Splash. (Recharge 5-6)</strong> Create a stream of grape juice as per <em>Decanter of Endless Water</em>.<br><strong>Natural Weakness.</strong> Double damage from all Fire, regardless of resistances. Can only heal while hydrated.<br><strong>Goodberry (Bonus Action, 1/Short Rest)</strong> — creates grapes.<br><strong>Language:</strong> Can partially understand all plants; can fully speak and understand grape.<br><strong>Water Walk:</strong> Only during your movement.<br><br>Once per long rest, roll a d8 to open Third Eye or Crown Gate.`},
+// {id:'moldavite-p',name:'Moldavite',variant:'Projenitor',harm:'positive',shards:4,action:'Action',brief:'Manipulates gravity around you or enemies.',text:`Choose <strong>one</strong> of the following:<br><br><strong>Moldavite Flush.</strong> For 1 minute, you gain the <em>Zero Gravity</em> condition — long jump and high jump distances ×5, <em>Feather Fall</em> for duration. Can hold 10× your weight in inanimate objects.<br><br><strong>Reverse Gravity.</strong> Shatter the stone. All living creatures entering or starting their turn in a <strong>20ft. sphere</strong> make a <strong>STR save</strong> or hover 5ft. up and have speed reduced by 5× your positive Harmony score, plus disadvantage on melee attacks.<br><br><strong>Impound Gravity.</strong> Crush to powder — creates a 10ft. cloud that follows you. Creatures inside make a <strong>DEX save</strong> or have speed reduced by 5× Harmony, plus disadvantage on all DEX checks/saves.<br><br>Afterwards, may open the Crown Gate.`},
+// {id:'moldavite-f',name:'Moldavite',variant:'Fused',harm:'positive',shards:14,action:'Passive',brief:'Permanent zero gravity with a deadly orbiting cloud.',text:`<strong>Suggestive Gravity.</strong> Constantly under <em>Zero Gravity</em>; toggle on/off with a bonus action.<br><br><strong>Cosmic Cloud. (1/day)</strong> Impound Gravity aura always active at 20ft. Grants <strong>Special cover (AC + Harmony score)</strong> to creatures within. Once per long rest, swirl violently: <strong>STR save</strong> or 36 (8d8) Piercing damage; failures have speed reduced to 0 and are pulled adjacent to you.<br><br><strong>Magnetic Pull.</strong> Loose objects ≤ 5 lbs. fly toward you at high speeds.<br><br><strong>Into the Stratosphere.</strong> Each time you leave the ground while Zero Gravity is active, roll a d20 + Harmony score. If result < 5 or natural 1, rocket 50ft. straight up.<br><br>Once per long rest, open Crown Gate regardless of other opened gates.`},
+// {id:'onyx-p',name:'Onyx',variant:'Projenitor',harm:'negative',shards:4,action:'Action',brief:'Onyx Veil armor; invisible in shadows; powerful punch.',text:`Call forth the mighty Onyx, shrouding yourself in the <strong>Onyx Veil</strong> — armor shaped like a lion's mane helm. For 10 minutes, open the <strong>Solar Plexus Gate</strong> and gain <strong>AC = 18 + (−1 × negative Harmony score)</strong>. Also become <strong>Invisible while standing or moving through shadows</strong>.<br><br><strong>Onyx Punch.</strong> Melee Attack, +Stonekeeper modifier to hit, 5ft., one target. Hit: <strong>11 (2d10) + CHA modifier</strong>. Second attack at level 8; third at level 12.`},
+// {id:'onyx-f',name:'Onyx',variant:'Fused',harm:'negative',shards:12,action:'Passive',brief:'Constant Onyx Veil, strong resistances, concussive punches.',text:`<strong>Armored Adversary.</strong> Constantly have Onyx Veil active at all times.<br><strong>Dense Construction.</strong> Resistance to Thunder and all non-magical Bludgeoning, Piercing, Slashing damage.<br><strong>Concussive Fist.</strong> Critical hits with Onyx Punch: target is <strong>Stunned</strong> until end of its next turn. May make an additional Onyx Punch as a bonus action.<br><strong>Cumbersome Armor.</strong> All DEX checks/saves with a natural roll higher than 8 become a natural 8.<br><br>Once per day, open Solar Plexus Gate regardless of other opened gates.`},
+// {id:'jade-p',name:'Jade',variant:'Projenitor',harm:'positive',shards:2,action:'Bonus Action',brief:'Tiny Jade Ox sits on your shoulder to intercept or boost attacks.',text:`A <strong>tiny Jade Ox</strong> appears resting on your shoulder (max 2 at a time). The Ox only awakens when your Harmony is positive.<br><br>When struck by a melee or ranged weapon attack, use your Reaction to call the Ox to intercept. Make a melee attack <strong>at advantage</strong>, adding only your positive Harmony score. If your attack meets or exceeds the incoming roll, the Ox <strong>nullifies the attack</strong> and destroys itself. On a miss, the attack goes through and the Ox shatters.<br><br>Alternatively, when you hit with a melee attack, send the Ox rocketing at the target: <strong>+11 (2d10) Radiant + positive Harmony score</strong> and it destroys itself.<br><br>After the Ox is destroyed, you may open the Heart Gate.`},
+// {id:'jade-f',name:'Jade',variant:'Fused',harm:'positive',shards:15,action:'Action',brief:'Summons a Large Jade Ox familiar with its own statblock.',text:`Touch the sculpture's forehead to summon a <strong>Large Jade Ox familiar</strong>. It follows your every command and you communicate with it telepathically. Cannot benefit from rests or healing. Remains until destroyed or dismissed; 7-day cooldown after.<br><br><strong>Jade Ox Stats:</strong> AC 13 + Harmony | HP 90 (5d20+38) | Speed 50ft. | STR 20(+5) DEX 12(+1) CON 11 WIS 12 CHA 8<br><br><strong>Trampling Charge.</strong> If the Ox moves 20ft. straight toward a creature and hits with a gore attack, target makes DC 15 STR save or is knocked prone. Can make a hooves attack as a bonus action if target is prone.<br><br><strong>Open Gate Four.</strong> When summoned, opens Heart Chakra centered within 5ft. of itself — all allied creatures within gain +Harmony bonus to attack and damage rolls.<br><br><strong>Gore:</strong> +6 to hit, 5ft., 13 (2d8+4) bludgeoning + 15 (2d6+8) radiant. &nbsp;<strong>Hooves:</strong> +6 to hit, 10 (1d12+4) bludgeoning + 11 (1d6+8) radiant.<br><br><strong>Interception (Reaction):</strong> When an allied creature within the Heart Chakra aura is hit, the Jade Ox may take the damage instead; gains temp HP equal to half damage taken.`},
+// {id:'sapphire-p',name:'Blue Sapphire',variant:'Projenitor',harm:'none',shards:5,action:'Action',brief:'Swap your INT/CHA score for a random roll, or scramble a target\'s.',text:`Choose one:<br><br><strong>Vocalize Thoughts.</strong> Roll a d20 + proficiency bonus (max 20). This number replaces both your <strong>INT and CHA scores</strong> for 1 hour. Cannot be affected by Lucky, Portent Dice, or other external effects. Afterwards, may open the Throat Gate.<br><br><strong>Mind Scramble.</strong> Touch a humanoid NPC; they make a <strong>CHA or INT save</strong> (whichever is higher). On failure, their <strong>CHA and INT scores swap places</strong> for 1 hour or until injured. Afterwards, may open your Third Eye.`},
+// {id:'sapphire-f',name:'Blue Sapphire',variant:'Fused',harm:'none',shards:18,action:'Action',brief:'Maximizes your INT/CHA or devastates a target\'s to 10.',text:`The stone is so quirky it will always find its way back to its owner when lost.<br><br>Choose one:<br><br><strong>Improved Vocalize Thoughts.</strong> For 1 hour, if either your <strong>INT or CHA is below 20, both become 20</strong>.<br><br><strong>Improved Mind Scramble.</strong> Touch a humanoid NPC; they make a <strong>CHA or INT save</strong> (whichever is higher). On failure, if either of the target's CHA or INT is higher than 10, <strong>both are reduced to 10</strong>.<br><br>When either effect occurs, open both the <strong>Throat and Third Eye Gates</strong> regardless of other opened gates for 1 hour. Afterwards, the stone goes on a <strong>7-day cooldown</strong>.`},
+// {id:'bloodstone-p',name:'Bloodstone',variant:'Projenitor',harm:'negative',shards:3,action:'Bonus Action',brief:'Vampiric melee attack that drains CON from the target.',text:`Your next successful melee attack (weapon or unarmed) deals <strong>extra Piercing damage equal to 2× CON modifier</strong>, and you gain <strong>Temporary HP equal to the damage dealt</strong>.<br><br>After damage, force the target to make a <strong>CON save</strong>. On failure, the target reduces their next saving throw by your <strong>negative Harmony score</strong>.<br><br>Afterwards, may open the Solar Plexus Gate.`},
+// {id:'bloodstone-f',name:'Bloodstone',variant:'Fused',harm:'negative',shards:11,action:'Passive',brief:'Cannot die — instead gains Purgatory condition with horrific trade-offs.',text:`While held, you <strong>cannot have your HP total dropped to 0</strong> (though you can still gain conditions like Unconscious). Upon reaching your last hit point, you gain <strong>Purgatory</strong> — you cannot die because neither Heaven nor Hell will claim you.<br><br><strong>While Purgatory is active:</strong><br>• <strong>Life Drain:</strong> At start of each of your turns, steal HP from all living creatures within 10ft. equal to your negative Harmony score.<br>• <strong>Sight of Stone. (1/day)</strong> As an Action, force a creature you're making eye contact with to make a <strong>CON save vs. Stonekeeper DC</strong> or become <strong>Petrified</strong> for 1 hour.<br>• <strong>Punishment:</strong> Lose two random senses (roll 2d6 — 1=Sight, 2=Smell, 3=Touch, 4=Speech, 5=Taste, 6=Hearing). Checks requiring lost senses auto-fail.<br>• Reduce all checks, attacks, and saves by 3.<br>• First melee/unarmed attack each round gains bonus damage equal to half CON score (Piercing).<br>• Open Solar Plexus Gate for 1 hour.<br><br>Purgatory ends with Remove Curse, Greater Restoration, or greater.`},
+// {id:'sunstone-p',name:'Sunstone',variant:'Projenitor',harm:'positive',shards:7,action:'Action (Concentration)',brief:'Transforms touched objects into refractive light-bending glass.',text:`Touch an object. For 10 minutes (Concentration), the Sunstone superheats the material into <strong>solid, refractive glass</strong>:<br><br><strong>Armor/Clothing:</strong> Becomes Heavy Armor, AC = 17 + Harmony (max 20). Resistance to Slashing/Piercing; vulnerable to Bludgeoning. Shatters on critical hit.<br><strong>Weapon:</strong> Nearly invisible while wielded — Advantage on all weapon attacks. Adds Harmony score to final damage. Shatters on critical failure.<br><strong>Shield:</strong> Magnifying lens — +Harmony to Perception and Investigation. AC bonus of (−1 + Harmony). Disadvantage on all DEX/STR checks while wielded.<br><strong>Ammunition:</strong> Range increased by 20ft × Harmony. Adds Harmony to attack roll. Disadvantage against targets within 30ft; misfires on failed attack roll.<br><strong>Wall/Vehicle:</strong> Turned into one-sided glass — you can see through the side you're touching. Creatures on the opposite side see you as Invisible. Requires CON save each round to maintain (DC 10 + rounds active).<br><br>After effects end, may open the Sacral Gate.`},
+// {id:'sunstone-f',name:'Sunstone',variant:'Fused',harm:'positive',shards:16,action:'Passive',brief:'You become clad in divine light — all damage becomes Radiant.',text:`<strong>Light Drain. (Recharge 5-6)</strong> Drain a single light source. Heal Xd6 where X equals the size of the source (1d6 Tiny, 2d6 Small, etc.).<br><strong>Bright Blight.</strong> You shed 30ft. bright light in all directions. Creatures requiring sight have Advantage on attacks against you.<br><strong>All damage you deal becomes Radiant.</strong><br><strong>Once per long rest,</strong> may open the Sacral Gate.<br><br><strong>Divine Light. (1/day)</strong> As an Action, turn yourself fully into solid light for 10 minutes. Flight speed 30ft. and you become Incorporeal — you can pass through solid objects. If inside a solid object at turn's end, ejected to nearest space and take 12d6 Bludgeoning damage.<br><br>Once Divine Light expires, you gain the <strong>Blinded</strong> condition until end of your next long rest. This condition supersedes any immunities.`},
+// {id:'obsidian-p',name:'Obsidian',variant:'Projenitor',harm:'negative',shards:3,action:'Action or Reaction',brief:'Psychic spear, psychic knife, or reflect damage back at an attacker.',text:`Choose one:<br><br><strong>Obsidian Spear.</strong> Melee Attack, +Stonekeeper modifier, 10ft., one target. Hit: <strong>7 (1d12) Psychic damage</strong> + 2 extra Psychic per additional Shard spent. On critical hit, creature makes an <strong>INT save vs. Stonekeeper DC</strong> or loses their Attack Action next turn.<br><br><strong>Obsidian Knife.</strong> Melee Attack, +Stonekeeper modifier, 5ft., one target. Hit: <strong>4 (1d6) Psychic damage</strong> + 1d4 Psychic per 2 additional Shards. Can crit on an <strong>18 or 19</strong>.<br><br><strong>Obsidian Mirror. (Reaction)</strong> When hit by a single-target melee or ranged attack from a creature you can see, deal <strong>Psychic damage equal to half the damage taken</strong> (rounded down) + 1d8 per 2 additional Shards. If the incoming attack is a critical hit, this <strong>nullifies the crit</strong> and treats it as a normal hit.<br><br>After any action, may have Obsidian "cleanse" your negative Harmony score and swap it to its opposite.`},
+// {id:'obsidian-f',name:'Obsidian',variant:'Fused',harm:'negative',shards:17,action:'Action',brief:'Shadow movement, darkness immunity, and devastating sneak attacks.',text:`<strong>Obsidian Sneak Attack. (Recharge 5-6)</strong> Once you reappear from a shadow, spend an action and ≥3 Shards to attack with Obsidian Spear or Knife. Critical hit threshold reduced by 1.<br><strong>See Through Darkness.</strong> Can see through all magical and non-magical darkness as if it weren't there. Immune to the Blinded condition.<br><strong>Light Sensitivity.</strong> Vulnerable to Radiant and Fire damage regardless of resistances/immunities.<br><strong>Once per long rest,</strong> open the Root Gate.<br><br><strong>Darkness Incarnate. (1/day)</strong> As an Action, for 10 minutes every shadow becomes a reflection of the abyss. During your movement, walk and move through connected pools of shadows as if they were water — becoming Invisible during this movement. After movement completes, reappear at end position.<br><br>Once Darkness Incarnate expires, speed is reduced to 0 until end of next long rest. This condition supersedes any immunities. Afterwards, open Root Gate for 1 hour.`},
+// {id:'citrine-p',name:'Citrine',variant:'Projenitor',harm:'none',shards:1,action:'Reaction',brief:'Reduce the price of an item being purchased mid-transaction.',text:`When haggling with a merchant, use a reaction mid-conversation to <strong>artificially deflate the price</strong> of a touchable object. Roll a d4 and reduce price by that percentage (rounded up).<br><br>Spend additional Shards to upgrade the die:<br>• <strong>1 Shard:</strong> 1d6 + 4 &nbsp;• <strong>2 Shards:</strong> 1d12 + 8 &nbsp;• <strong>3 Shards:</strong> 2d12 + 6 &nbsp;• <strong>5 Shards:</strong> 2d20 &nbsp;• <strong>10 Shards:</strong> 1d100<br><br>After the price is set, you <strong>must complete the purchase</strong> regardless of the final price. Afterwards, may open Solar Plexus or Sacral Gates.`},
+// {id:'citrine-f',name:'Citrine',variant:'Fused',harm:'none',shards:5,action:'Action',brief:'Duplicate any item for a chosen duration.',text:`When you or an ally receives a new item, use an action and Shards to <strong>duplicate the item</strong>. Perfectly duplicated, functions normally for the duration:<br><br>• <strong>2 Shards:</strong> 1 Round &nbsp;• <strong>4 Shards:</strong> 1 Minute &nbsp;• <strong>6 Shards:</strong> 5 Minutes &nbsp;• <strong>8 Shards:</strong> 10 Minutes<br>• <strong>10 Shards:</strong> 1 Hour &nbsp;• <strong>12 Shards:</strong> 8 Hours &nbsp;• <strong>14 Shards:</strong> 24 Hours &nbsp;• <strong>20 Shards:</strong> Indefinitely<br><br>After time expires, the object melts into black unusable goo. May then open Solar Plexus or Sacral Gates for 1 hour. The stone then goes on a <strong>7-day cooldown</strong>.`},
+// {id:'amethyst-p',name:'Amethyst',variant:'Projenitor',harm:'negative',shards:2,action:'Action',brief:'Swallow to create an internal pocket dimension for consumed items.',text:`When swallowed, for 10 minutes anything you consume (up to 50 gallons) falls into a <strong>pocket dimension</strong> within your body instead of your digestive tract. Harmful items like poisons maintain their potency but <strong>don't affect you</strong>. You can combine potions into a pseudo-concoction bearing all effects.<br><br>At any time, use an object interaction to <strong>launch any or all held objects</strong> from your mouth a distance equal to <strong>30 × (−1 × negative Harmony score) feet</strong>.<br><br>When time expires, all held items are <strong>forcefully launched to maximum distance</strong>. Afterwards, may open the Crown Gate.`},
+// {id:'amethyst-f',name:'Amethyst',variant:'Fused',harm:'negative',shards:12,action:'Passive',brief:'Permanent 100-gallon pocket dimension, but you must eat constantly.',text:`<strong>Deep Pit.</strong> Permanently have an Amethyst pocket dimension (up to <strong>100 gallons</strong>). Speed reduced by 5ft. for every 10 gallons filled above 50.<br><br><strong>Hunger.</strong> You <strong>must</strong> consume at least 1 gallon of material into your pocket dimension every minute or take <strong>30 Force damage</strong> as your pit growls louder.<br><br>Immune to the <strong>Poisoned condition</strong> and resistant to Poison damage.<br><br>Reduce the DC of all <strong>INT checks</strong> you make by your negative Harmony score.<br><br>Once per long rest, open the Crown Gate regardless of other opened gates.`},
+// {id:'moqui-p',name:'Moqui Marble',variant:'Projenitor',harm:'negative',shards:4,action:'Bonus Action (Concentration)',brief:'Creates a semi-transparent projection of yourself nearby.',text:`Create a <strong>faint projection of yourself</strong> veiled in soft purple light, appearing right next to you. The mirage is completely transparent. HP: 10; walking speed: 10ft. × (−1 × negative Harmony score).<br><br>Using a bonus action (this and subsequent turns), command the illusion to move into an unoccupied space you can see and/or <strong>swap places with you</strong>. Afterwards, make a <strong>CON save (DC 10 + each round active)</strong> to maintain concentration. On failure, illusion is dispelled.<br><br>On dispel, may open the Root Chakra.`},
+// {id:'moqui-f',name:'Moqui Marble',variant:'Fused',harm:'negative',shards:14,action:'1 Hour to cast',brief:'Full autonomous mirage of yourself with shared abilities and consciousness.',text:`Spend 1 hour polishing the marble (reduced by −10 minutes × negative Harmony score) to summon a <strong>Moqui Marble mirage of yourself</strong>. It inherits your movement speed, half your HP and AC (both rounded down), and looks exactly like you.<br><br>Choose <strong>three of your Ability Scores</strong> to share with the mirage. It can complete complex tasks on its own, though it has no equipment. Has access to your Stonekeeper class features, can open gates, and can wield Shards (but cannot create them).<br><br>You constantly see what your mirage sees, and may <strong>swap places with it at any time</strong>. Once summoned, both you and your Mirage may open the Root Chakra for 1 hour.<br><br>Cannot be used again until the mirage is dispelled/dismissed, after which it goes on a <strong>7-day cooldown</strong>.`},
+// {id:'turquoise-p',name:'Turquoise',variant:'Projenitor',harm:'positive',shards:5,action:'Action',brief:'Versatile emotional expression: balance, passion, understanding, peace, or manifestation.',text:`Choose one expression:<br><br><strong>Balance.</strong> Move your Harmony score to its opposite (−1 to +1).<br><strong>Passion.</strong> Advantage on all CHA checks and saving throws for the next minute.<br><strong>Understanding.</strong> Add your positive Harmony score to your next WIS check (doubled for Insight).<br><strong>Peace.</strong> Remove a condition that is making you act irrationally.<br><strong>Manifestation.</strong> Gain 3 Chakra.<br><br>After any expression, open the Throat Gate.`},
+// {id:'turquoise-f',name:'Turquoise',variant:'Fused',harm:'positive',shards:16,action:'Passive',brief:'Coin-based social power, but you need other people nearby to function.',text:`<strong>Infectious Personality. (1/day)</strong> Force a non-hostile humanoid to become <strong>Charmed by you</strong> (no save required) as long as you also take the Charmed condition against it. Lasts 1 hour or until either takes damage.<br><br><strong>Transcendent Mood. (1/day)</strong> Make your Harmony score its maximum in either direction. Sending Harmony negative causes this stone to cease functioning.<br><br><strong>Once per day,</strong> open the Throat Gate.<br><br><strong>Coin Toss. (Recharge 5-6)</strong> Flip the coin as a bonus action. <em>Smiling (Heads):</em> heal yourself or an ally within 30ft. by Harmony score d8s. <em>Frowning (Tails):</em> grant yourself and an ally within 30ft. temp HP equal to 3× Harmony. The face showing also grants Harmony score bonus to all CHA checks when in the presence of ≥10 creatures (Heads) or ≤9 creatures (Tails).<br><br><strong>Anxious Attachment.</strong> While alone or only with hostile humanoids, you have the Frightened condition and take 1d10 + CHA modifier Psychic at start of each of your turns. Supersedes immunities.`},
+// {id:'rose-p',name:'Rose Quartz',variant:'Projenitor',harm:'positive',shards:5,action:'Action',brief:'Charm a creature into obeying one of three emotional commands.',text:`Choose a non-hostile humanoid NPC that can see you. They make a <strong>CHA save vs. Stonekeeper DC</strong>. On failure, they become <strong>Charmed</strong> for a number of minutes equal to your positive Harmony score, and you may give them one command:<br><br><strong>Live:</strong> Flooded with determination — immediately uses all movement to flee out of sight to chase their life's goal.<br><strong>Laugh:</strong> Laughs uncontrollably — gains Blinded and Silenced conditions.<br><strong>Love:</strong> Overrun with love — immediately grapples the nearest familiar humanoid within vision (no save). If no familiar creatures nearby, hugs you.<br><br>If the target succeeds or the Charm expires, they know you attempted to Charm them and <strong>become hostile</strong>.<br><br>Afterwards, may open the Heart Gate.`},
+// {id:'rose-f',name:'Rose Quartz',variant:'Fused',harm:'positive',shards:18,action:'Reaction',brief:'JRPG-style dating sim conversation mechanic with escalating rewards.',text:`Trigger while mid-conversation with a non-hostile humanoid NPC. Time pauses momentarily. Present your DM with a <strong>goal you'd like to achieve through this conversation</strong>.<br><br>You complete the rest of the conversation solo, presented with <strong>3 "dialogue options"</strong> each time you speak — each representing a randomly chosen skill. Make the check against <strong>DC 5 + the target's WIS score</strong>. Success progresses the conversation; failure ends the interaction as if nothing happened.<br><br><strong>Level 1:</strong> Bonus to next CHA check with this creature equal to your positive Harmony score.<br><strong>Level 2:</strong> Target gains Charmed condition for hours equal to your Harmony score.<br><strong>Level 3:</strong> Your original goal is achieved.<br><strong>Level 4 (all 4 checks):</strong> Target becomes Charmed for ~30 (2d20+9) days, believes you are their one true love. When Charm expires, they feel as if you ruthlessly broke up with them.<br><br>Afterwards, open the Heart Gate regardless of other opened gates. Stone goes on a <strong>7-day cooldown</strong>.`},
+// {id:'garnet-p',name:'Garnet',variant:'Projenitor',harm:'none',shards:4,action:'Action, Bonus Action, or Reaction',brief:'Healing bullets, resistance buffs, or self-healing reactions.',text:`Choose one:<br><br><strong>Action — Garnet Bloodshot.</strong> Ranged Attack, +Stonekeeper modifier, 60/90ft., one target. Hit: <strong>Heal target 13 (3d8) HP + 2× positive Harmony score</strong>. Second target at level 8; third at level 12.<br><br><strong>Bonus Action — Garnet Overdrive.</strong> Touch a target. Until end of their next turn, they gain <strong>resistance to non-magical Bludgeoning, Piercing, Slashing</strong> and a bonus to attack and damage rolls equal to your positive Harmony score. Full resistance at level 8; immunity at level 12.<br><br><strong>Reaction — Garnet Seal.</strong> After being hit by a melee or ranged attack while conscious, <strong>heal yourself 4d10 HP</strong> + 1 extra d10 per additional Shard. At level 8, may use on a creature within 10ft; changes to 20ft. at level 12.<br><br>Afterwards, open the Sacral Gate.`},
+// {id:'garnet-f',name:'Garnet',variant:'Fused',harm:'none',shards:12,action:'10 Minutes',brief:'Manifest a version of yourself from another timeline as a different D&D class.',text:`Spend 10 minutes prying the stone open to manifest a <strong>version of yourself from another timeline</strong>. Your current self and your manifested self swap places.<br><br>Choose any of the <strong>12 Core D&D Classes</strong> (Artificer, Barbarian, Bard, Cleric, Druid, Fighter, Rogue, Ranger, Paladin, Monk, Warlock, or Wizard) and any of their subclasses.<br><br>Replace all current abilities with those of the chosen class. <strong>Level, Health, and Ability Scores remain the same</strong> — though you may swap any ability scores with one another.<br><br>Your physique and gear are magically reflected in the chosen class. All new gear is made of solid Garnet and is granted a bonus equal to your positive Harmony score (like a +2 Wand or +1 Shield). You may choose <strong>2 pieces of gear</strong>.<br><br>This manifestation lasts for <strong>1 hour</strong>, after which your true self returns and you may open the Sacral Gate. The stone then goes on a <strong>7-day cooldown</strong>.`},
+// {id:'tungsten-p',name:'Tungsten Cube',variant:'Projenitor',harm:'none',shards:10,action:'Action',brief:'Summon a 1200-pound cube of pure tungsten to crush, brace, launch, or absorb lightning.',text:`Summon a <strong>1ft. cube of pure tungsten (~1200 lbs)</strong> from the Dense Dimension. Command it to do one of:<br><br><strong>Crush.</strong> Summon directly above a creature. DEX or STR save or take <strong>50 (11d8) Bludgeoning damage</strong> (half on success). Fail by 5+ = lose action next turn; succeed by 5+ = 0 damage.<br><br><strong>Unmoveable.</strong> Summon in any open space within 20ft. The cube maintains its position in space for 1 hour, regardless of gravity. Can be moved 10ft. with a DC 30 Athletics check.<br><br><strong>Ballistic.</strong> Ranged Attack, +Stonekeeper modifier, 60ft., one target. Hit: <strong>26 (4d12) + CHA modifier</strong>. If target is Large or smaller, sent to the end of the 60ft. line, crashing through all creatures (+5 Bludgeoning per creature it passes through).<br><br><strong>Electrical Conductivity.</strong> Summon next to you for 1 minute. All Lightning damage attacks within 100ft. of the cube are nullified and redirected to it instead. Cube has <strong>50 HP</strong>.<br><br>After any effect, your speed is <strong>reduced to 0 for the next minute</strong>.`},
+// {id:'tungsten-f',name:'Tungsten Cube',variant:'Fused',harm:'none',shards:16,action:'Passive',brief:'Become solid Tungsten — immovable, nearly indestructible, but can\'t jump or dash.',text:`A permanent 6-inch Tungsten cube weighing 140 lbs. Requires <strong>two hands to use</strong>; cannot be made into jewelry. When held, you turn into <strong>solid Tungsten</strong>:<br><br>• Resistance to Lightning, Force, Fire, Acid, and all Bludgeoning/Piercing/Slashing damage.<br>• <strong>Tungsten Ballistic</strong> attack once per turn for free.<br>• <strong>Unstoppable Force. (Recharge 5-6)</strong> Move forward twice your speed in a straight line. Smashes through creatures and structures up to 10ft. thick. Creatures in the line make a DEX save or take 33 (6d10) Bludgeoning damage; all are thrown 10ft. and knocked Prone.<br>• <strong>Immovable Object.</strong> Cannot be grappled, pushed, thrown, displaced, or otherwise moved against your will. Applies to Hold Person, Banishment, Reverse Gravity, etc.<br>• <strong>Reverse Featherfall.</strong> Cannot jump, float, or fly. If falling, fall at 1000ft. per round. Calculate fall damage as 1d20 per 10ft. fallen (instead of 1d6, max 20d20).<br>• Speed halved. Cannot Dash or climb.<br><br><strong>Dimension Expansion, Density Superiority. (Action)</strong> For 1 minute, a 30ft. cube surrounds you with impenetrable walls on all sides. Creatures inside with STR < 22 immediately fail all STR or DEX rolls. You can attack with Tungsten Ballistic without making an attack roll. Afterwards, speed reduced to 0 for 1 minute; ability goes on a <strong>7-day cooldown</strong>.`},
+];
+
+const CHAKRA_GATES=[
+// {id:'gate-1',num:1,name:'Root Chakra',sub:'Grounding, Stability',stat:'STR',harm:'none',
+text:`<strong>Base Effect:</strong> Gain proficiency in Athletics (STR) if not already proficient. Your walking speed <strong>doubles</strong>. Gain <strong>5ft. of blindsight</strong> for the duration.<br><br><strong>Enlightened Enhancement:</strong> Gain expertise in Athletics (STR). You <strong>cannot be moved or disrupted in any way</strong> as long as your feet remain in contact with the ground.`},
+// {id:'gate-2',num:2,name:'Sacral Chakra',sub:'Desire, Creativity',stat:'DEX',harm:'none',
+text:`<strong>Base Effect:</strong> All movement you make is done <strong>silently</strong>. Gain a <strong>climb speed equal to your walking speed</strong> for the duration.<br><br><strong>Enlightened Enhancement:</strong> Gain the <strong>Invisible condition</strong> while moving at a walking pace (~15ft. per round). You are able to <strong>walk on walls and on the ceiling</strong> as if walking on flat ground.`},
+// {id:'gate-3',num:3,name:'Solar Plexus Chakra',sub:'Confidence, Self-worth',stat:'CON',harm:'none',
+text:`<strong>Base Effect:</strong> Advantage on all <strong>physical saving throws</strong> (STR, DEX, CON) for the duration. Gain <strong>1d10 Temporary HP</strong> at the start of each of your turns as long as you have at least 1 HP.<br><br><strong>Enlightened Enhancement:</strong> Immediately gain <strong>Temporary HP equal to half your current HP</strong> (rounded up) for the next 1d4 rounds. Roll all saving throws <strong>with advantage</strong> for the duration.`},
+// {id:'gate-4',num:4,name:'Heart Chakra',sub:'Love, Humility',stat:'HAR',harm:'none',
+text:`<strong>Base Effect:</strong> If Harmony is positive, all allies within 10ft. gain a bonus to <strong>weapon attack and damage rolls equal to your Harmony score</strong>. If Harmony is negative, all enemies within 10ft. <strong>reduce their weapon attack rolls</strong> by your Harmony score.<br><br><strong>Enlightened Enhancement:</strong> Range extends from 10ft. to <strong>15ft.</strong> Additionally, you are able to use your <strong>Vibe Shift class feature on any creature inside</strong> using a bonus action.`},
+// {id:'gate-5',num:5,name:'Throat Chakra',sub:'Communication, Connection',stat:'CHA',harm:'none',
+text:`<strong>Base Effect:</strong> Gain a bonus to your next <strong>CHA skill check equal to your proficiency bonus</strong>. Gain the ability to <strong>mimic any humanoid creature</strong> you have heard within the last hour. You are able to <strong>cast your voice from anywhere within 100ft.</strong> of you for the duration.<br><br><strong>Enlightened Enhancement:</strong> As an Action, cast your voice from within the throat of a single humanoid within 200ft. They make a <strong>CHA save</strong> or be given the <strong>Silenced condition</strong>, which also stops any effect they were concentrating on.`},
+// {id:'gate-6',num:6,name:'Third Eye Chakra',sub:'Imagination, Intuition',stat:'WIS',harm:'none',
+text:`<strong>Base Effect:</strong> Gain the benefits of <strong>See Invisibility</strong> and <strong>Detect Magic</strong>. Gain the ability to <strong>see through walls and structures no more than 10ft. thick</strong> (so long as you are within 5ft. of the object) for the duration.<br><br><strong>Enlightened Enhancement:</strong> Your Third Eye vision turns into <strong>5ft. of True Sight</strong>. You are able to <strong>see through any solid object at will</strong> with an object interaction, as well as being able to <strong>see into the Ethereal plane</strong> for the duration.`},
+// {id:'gate-7',num:7,name:'Crown Chakra',sub:'Intellect, Enlightenment',stat:'INT',harm:'none',
+text:`<strong>Base Effect:</strong> The DC of your next <strong>INT ability check or saving throw is reduced by 1d8</strong>. You gain the ability to <strong>speak, read, or write any language you have heard before</strong> for the duration.<br><br><strong>Enlightened Enhancement:</strong> As an Action, meditate for 1 minute to gain <strong>immediate clarity on one puzzle or problem</strong> you seek. You also <strong>share the INT score of the highest-INT creature within 50ft.</strong> (provided it is higher than your own) for the duration.`},
+];
+
+// ═══════════════════════════════════════════════════
+// ── STATE ────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+const S={
+  tab:'f',
+  activePersona:null,
+  modal:null,
+  // cartomancer filters
+  cartFilter:'all', cartSort:'level',
+  // stonekeeper filters
+  stoneFilter:'all',
+};
+
+// ═══════════════════════════════════════════════════
+// ── HELPERS ──────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function statClass(v){
+  if((v.includes('+')||v.includes('±')) && !v.includes('−') && v!=='+0' && v!=='±0') return 'sp-pos';
+  if(v.includes('−')||v.includes('-')) return 'sp-neg';
+  return 'sp-zero';
+}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ═══════════════════════════════════════════════════
+// ── TAB SWITCHING ────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function setTab(t){
+  S.tab=t;
+  document.querySelectorAll('.tab').forEach(el=>{
+    el.classList.remove('active-f','active-c','active-s');
+  });
+  document.querySelector(`.tab[data-tab="${t}"]`).classList.add(`active-${t}`);
+  document.getElementById('active-badge').style.display = t==='f' ? '' : 'none';
+  renderSidebar();
+  renderGrid();
+}
+
+// ═══════════════════════════════════════════════════
+// ── SIDEBAR ──────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderSidebar(){
+  const sec=document.getElementById('sb-section');
+  const filters=document.getElementById('sb-filters');
+  const list=document.getElementById('sb-list');
+  list.innerHTML=''; filters.innerHTML=''; filters.style.display='none';
+
+  if(S.tab==='f'){
+    sec.textContent='Personas';
+    PERSONAS.forEach(p=>{
+      list.appendChild(makeSBItem(p.archetype, S.activePersona===p.id ? 'active-persona' : '', '', ()=>{ openModal(p,'f'); closeSidebar(); }));
+    });
+  } else if(S.tab==='c'){
+    sec.textContent='Cards';
+    filters.style.display='flex';
+    // filter row
+    const fr=document.createElement('div');fr.className='sb-filter-row';
+    ['all','major','pentacles','wands','cups','swords'].forEach(f=>{
+      const b=document.createElement('button');b.className=`pill${S.cartFilter===f?' on-c':''}`;
+      b.textContent=f==='all'?'All':f.charAt(0).toUpperCase()+f.slice(1);
+      b.addEventListener('click',()=>{S.cartFilter=f;renderSidebar();});fr.appendChild(b);
+    });
+    filters.appendChild(fr);
+    const sr=document.createElement('div');sr.className='sb-filter-row';
+    [{k:'level',l:'Level'},{k:'alpha',l:'A–Z'},{k:'type',l:'Type'}].forEach(({k,l})=>{
+      const b=document.createElement('button');b.className=`pill${S.cartSort===k?' on-c':''}`;
+      b.textContent=l;b.addEventListener('click',()=>{S.cartSort=k;renderSidebar();});sr.appendChild(b);
+    });
+    filters.appendChild(sr);
+    // card list
+    let cards=ALL_TAROT.filter(c=>S.cartFilter==='all'||c.arcana===S.cartFilter);
+    if(S.cartSort==='alpha') cards=[...cards].sort((a,b)=>a.name.localeCompare(b.name));
+    else if(S.cartSort==='type'){const to={action:0,bonus:1,reaction:2,trap:3};cards=[...cards].sort((a,b)=>(to[a.type]??4)-(to[b.type]??4)||a.name.localeCompare(b.name));}
+    if(S.cartSort==='level'){
+      const byLvl={};cards.forEach(c=>{(byLvl[c.level]=byLvl[c.level]||[]).push(c);});
+      Object.keys(byLvl).sort((a,b)=>+a-+b).forEach(lvl=>{
+        const h=document.createElement('div');h.className='sb-section';h.style.paddingTop='6px';h.textContent=`Level ${lvl}`;list.appendChild(h);
+        byLvl[lvl].forEach(c=>{
+          list.appendChild(makeSBItem(c.name,'',`pip-${c.type}`,()=>{ openModal(c,'c'); closeSidebar(); }));
+        });
+      });
+    } else {
+      cards.forEach(c=>list.appendChild(makeSBItem(c.name,'',`pip-${c.type}`,()=>{ openModal(c,'c'); closeSidebar(); })));
+    }
+  } else if(S.tab==='s'){
+    sec.textContent='Crystals & Gates';
+    filters.style.display='flex';
+    const fr=document.createElement('div');fr.className='sb-filter-row';
+    [{k:'all',l:'All'},{k:'projenitor',l:'Projenitor'},{k:'fused',l:'Fused'},{k:'gate',l:'Gates'}].forEach(({k,l})=>{
+      const b=document.createElement('button');b.className=`pill${S.stoneFilter===k?' on-s':''}`;
+      b.textContent=l;b.addEventListener('click',()=>{S.stoneFilter=k;renderSidebar();});fr.appendChild(b);
+    });
+    filters.appendChild(fr);
+    const showCrystals=S.stoneFilter==='all'||S.stoneFilter==='projenitor'||S.stoneFilter==='fused';
+    const showGates=S.stoneFilter==='all'||S.stoneFilter==='gate';
+    if(showCrystals){
+      const h=document.createElement('div');h.className='sb-section';h.style.paddingTop='6px';h.textContent='Rock Collection';list.appendChild(h);
+      CRYSTALS.filter(c=>S.stoneFilter==='all'||c.variant.toLowerCase()===S.stoneFilter)
+        .forEach(c=>list.appendChild(makeSBItem(`${c.name} (${c.variant})`,'',`pip-${c.variant.toLowerCase()}`,()=>{ openModal(c,'s'); closeSidebar(); })));
+    }
+    if(showGates){
+      const h=document.createElement('div');h.className='sb-section';h.style.paddingTop='6px';h.textContent='Chakra Gates';list.appendChild(h);
+      CHAKRA_GATES.forEach(g=>list.appendChild(makeSBItem(`Gate ${g.num}: ${g.name}`,'','pip-gate',()=>{ openModal(g,'gate'); closeSidebar(); })));
+    }
+  }
+}
+
+function makeSBItem(name,extraClass,pipClass,onClick){
+  const div=document.createElement('div');div.className=`sb-card${extraClass?' '+extraClass:''}`;
+  const dot=document.createElement('div');dot.className=`sb-dot${pipClass?' '+pipClass:''}`;
+  const label=document.createElement('div');label.className='sb-name';label.textContent=name;
+  div.appendChild(dot);div.appendChild(label);
+  div.addEventListener('click',onClick);
+  return div;
+}
+
+// ═══════════════════════════════════════════════════
+// ── GRID ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function renderGrid(){
+  const grid=document.getElementById('grid');grid.innerHTML='';
+  if(S.tab==='f') renderFracturedGrid(grid);
+  else if(S.tab==='c') renderCartomancerGrid(grid);
+  else if(S.tab==='s') renderStonekeeperGrid(grid);
+}
+
+function renderFracturedGrid(grid){
+  PERSONAS.forEach(p=>{
+    const isActive=p.id===S.activePersona;
+    const div=document.createElement('div');div.className=`tile f-tile${isActive?' active-tile':''}`;
+    const statsHtml=p.stats.map(s=>`<span class="stat-pip ${statClass(s.v)}">${s.s} ${s.v}</span>`).join('');
+    div.innerHTML=`
+      <div class="tile-bar"></div>
+      <div class="tile-head">
+        <div class="tile-super">${p.archetype}</div>
+        <div class="tile-name">${p.name}</div>
+        <div class="tile-quote">${p.flavor}</div>
+      </div>
+      <div class="stat-pips">${statsHtml}</div>
+      <div class="ability-rows">
+        <div class="ab-row"><div class="ab-icon passive">◆</div><div class="ab-label">${p.passive.name}</div></div>
+        <div class="ab-row"><div class="ab-icon instinct">⚡</div><div class="ab-label">${p.instinct.name}</div></div>
+        <div class="ab-row"><div class="ab-icon ${p.shadow?'shadow':'no-shadow'}">👁</div><div class="ab-label">${p.shadow?p.shadow.name:'No Shadow'}</div></div>
+      </div>
+      <div class="tile-footer">
+        <div class="drive-group"><div class="drive-lbl">Drive</div><div class="drive-txt">${p.drive}</div></div>
+        ${isActive?'<div class="active-crown"><span>Active</span></div>':''}
+      </div>`;
+    div.addEventListener('click',()=>openModal(p,'f'));grid.appendChild(div);
+  });
+}
+
+function renderCartomancerGrid(grid){
+  let cards=ALL_TAROT.filter(c=>S.cartFilter==='all'||c.arcana===S.cartFilter);
+  if(S.cartSort==='alpha') cards=[...cards].sort((a,b)=>a.name.localeCompare(b.name));
+  else if(S.cartSort==='type'){const to={action:0,bonus:1,reaction:2,trap:3};cards=[...cards].sort((a,b)=>(to[a.type]??4)-(to[b.type]??4)||a.name.localeCompare(b.name));}
+  cards.forEach(c=>{
+    const div=document.createElement('div');div.className='tile c-tile';
+    div.innerHTML=`
+      <div class="tile-bar" style="background:var(--acc-c)"></div>
+      <div class="tile-head">
+        <div class="tile-super">${SUIT_FULL[c.arcana]}</div>
+        <div class="tile-name">${c.name}</div>
+        <div class="tile-quote">${c.flavor||''}</div>
+      </div>
+      <div class="tile-badges">
+        <span class="badge badge-${c.type}">${TYPE_FULL[c.type]}</span>
+        <span class="badge badge-level">Level ${c.level}</span>
+        ${c.conc?'<span class="badge" style="background:var(--surface2);border:1px solid var(--border);color:var(--text-dim)">Concentration</span>':''}
+      </div>`;
+    div.addEventListener('click',()=>openModal(c,'c'));grid.appendChild(div);
+  });
+}
+
+function renderStonekeeperGrid(grid){
+  const showCrystals=S.stoneFilter==='all'||S.stoneFilter==='projenitor'||S.stoneFilter==='fused';
+  const showGates=S.stoneFilter==='all'||S.stoneFilter==='gate';
+
+  if(showCrystals){
+    // group by crystal name
+    const names=[...new Set(CRYSTALS.map(c=>c.name))];
+    CRYSTALS.filter(c=>S.stoneFilter==='all'||c.variant.toLowerCase()===S.stoneFilter).forEach(c=>{
+      const div=document.createElement('div');div.className='tile s-tile';
+      const harmBadge=c.harm==='positive'?'badge-pos-harm':c.harm==='negative'?'badge-neg-harm':'badge-no-harm';
+      const harmLabel=c.harm==='positive'?'+ Harmony Required':c.harm==='negative'?'− Harmony Required':'No Harmony Required';
+      div.innerHTML=`
+        <div class="tile-bar" style="background:var(--acc-s)"></div>
+        <div class="tile-head">
+          <div class="tile-super">${c.variant}</div>
+          <div class="tile-name">${c.name}</div>
+        </div>
+        <div class="tile-badges">
+          <span class="badge badge-${c.variant.toLowerCase()}">${c.variant}</span>
+          <span class="badge ${harmBadge}">${harmLabel}</span>
+          ${c.shards>0?`<span class="badge badge-level">${c.shards} Shards</span>`:''}
+          <span class="badge badge-level">${c.action}</span>
+        </div>
+        <div class="tile-body">${c.brief}</div>`;
+      div.addEventListener('click',()=>openModal(c,'s'));grid.appendChild(div);
+    });
+  }
+  if(showGates){
+    CHAKRA_GATES.forEach(g=>{
+      const div=document.createElement('div');div.className='tile s-tile';
+      div.innerHTML=`
+        <div class="tile-bar" style="background:#c09000"></div>
+        <div class="tile-head">
+          <div class="tile-super">Gate ${g.num} · ${g.stat}</div>
+          <div class="tile-name">${g.name}</div>
+          <div class="tile-quote" style="font-style:normal;font-size:11px;color:var(--text-dim)">${g.sub}</div>
+        </div>
+        <div class="tile-badges"><span class="badge badge-gate">Chakra Gate</span><span class="badge badge-level">${g.stat}</span></div>`;
+      div.addEventListener('click',()=>openModal(g,'gate'));grid.appendChild(div);
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ── MODAL ────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function openModal(item,type){
+  S.modal={item,type};
+  const modal=document.getElementById('modal');
+  modal.className=`modal-${type}`;
+  const isActivePersona=type==='f'&&item.id===S.activePersona;
+  if(isActivePersona) modal.classList.add('active-modal');
+  document.getElementById('m-super').textContent='';
+  document.getElementById('m-name').textContent='';
+  document.getElementById('m-sub').textContent='';
+  document.getElementById('m-stats').innerHTML='';
+  document.getElementById('m-badges').innerHTML='';
+  document.getElementById('m-body').innerHTML='';
+  const activate=document.getElementById('m-activate');
+  activate.style.display='none';
+
+  if(type==='f'){
+    buildFracturedModal(item,isActivePersona,activate);
+  } else if(type==='c'){
+    buildCartomancerModal(item);
+  } else if(type==='s'){
+    buildStonekeeperModal(item);
+  } else if(type==='gate'){
+    buildGateModal(item);
+  }
+  document.getElementById('overlay').classList.add('open');
+}
+
+function buildFracturedModal(p,isActive,activateBtn){
+  document.getElementById('m-super').textContent=p.archetype;
+  document.getElementById('m-name').textContent=p.name;
+  document.getElementById('m-sub').textContent=p.flavor;
+  document.getElementById('m-stats').innerHTML=p.stats.map(s=>`<span class="stat-pip ${statClass(s.v)}">${s.s} ${s.v}</span>`).join('');
+  const body=document.getElementById('m-body');
+  body.appendChild(makeAbBlock('passive','◆','Passive',p.passive.name,p.passive.usage,p.passive.text));
+  body.appendChild(makeAbBlock('instinct','⚡','Instinct Memory',p.instinct.name,p.instinct.usage,p.instinct.text));
+  if(p.shadow) body.appendChild(makeAbBlock('shadow','👁',"Mask's Shadow",p.shadow.name,p.shadow.usage,p.shadow.text));
+  else body.appendChild(makeNoShadowBlock(p.shadowNote));
+  const bh=document.createElement('div');bh.className='behavior-block';
+  bh.innerHTML=`<div class="block-lbl">Behavior</div><div class="block-body">${p.behavior}</div>`;body.appendChild(bh);
+  const dr=document.createElement('div');dr.className='drive-block';
+  dr.innerHTML=`<div class="drive-icon">◎</div><div class="drive-inner"><div class="block-lbl">Drive</div><div class="block-body">${p.drive}</div></div>`;body.appendChild(dr);
+  activateBtn.style.display='inline-flex';
+  activateBtn.textContent=isActive?'Deactivate':'Set as Active';
+  activateBtn.className=`btn ${isActive?'btn-deactivate':'btn-activate'}`;
+}
+
+function buildCartomancerModal(c){
+  document.getElementById('m-super').textContent=SUIT_FULL[c.arcana];
+  document.getElementById('m-name').textContent=c.name;
+  document.getElementById('m-sub').textContent=c.flavor||'';
+  document.getElementById('m-badges').innerHTML=`
+    <span class="badge badge-${c.type}">${TYPE_FULL[c.type]}</span>
+    <span class="badge badge-level">Unlocks at Level ${c.level}</span>
+    ${c.conc?'<span class="badge" style="background:var(--acc-c-bg);border:1px solid var(--acc-c-border);color:var(--acc-c)">Concentration</span>':''}`;
+  const body=document.getElementById('m-body');
+  body.appendChild(makeAbBlock('cartomancer',SYM_MAP[c.arcana]||'✦','Card Effect',c.name,TYPE_FULL[c.type],c.text));
+}
+
+function buildStonekeeperModal(c){
+  document.getElementById('m-super').textContent=c.variant;
+  document.getElementById('m-name').textContent=c.name;
+  const harmLabel=c.harm==='positive'?'Positive Harmony Required':c.harm==='negative'?'Negative Harmony Required':'No Harmony Requirement';
+  document.getElementById('m-sub').textContent=harmLabel;
+  const harmBadge=c.harm==='positive'?'badge-pos-harm':c.harm==='negative'?'badge-neg-harm':'badge-no-harm';
+  document.getElementById('m-badges').innerHTML=`
+    <span class="badge badge-${c.variant.toLowerCase()}">${c.variant}</span>
+    <span class="badge ${harmBadge}">${harmLabel}</span>
+    ${c.shards>0?`<span class="badge badge-level">${c.shards} Shards</span>`:''}
+    <span class="badge badge-level">${c.action}</span>`;
+  const body=document.getElementById('m-body');
+  body.appendChild(makeAbBlock('stone','💎',c.variant,c.name,c.action,c.text));
+}
+
+function buildGateModal(g){
+  document.getElementById('m-super').textContent=`Gate ${g.num} · ${g.stat}`;
+  document.getElementById('m-name').textContent=g.name;
+  document.getElementById('m-sub').textContent=g.sub;
+  document.getElementById('m-badges').innerHTML=`<span class="badge badge-gate">Chakra Gate</span><span class="badge badge-level">${g.stat}</span>`;
+  const body=document.getElementById('m-body');
+  body.appendChild(makeAbBlock('gate','◉',`Gate ${g.num}`,g.name,'Open with 1 Chakra',g.text));
+}
+
+function makeAbBlock(cls,icon,typeName,name,usage,text){
+  const div=document.createElement('div');div.className='ab-block';
+  div.innerHTML=`
+    <div class="ab-block-head ${cls}">
+      <div class="ab-bigicon ${cls}">${icon}</div>
+      <div class="ab-title-col">
+        <div class="ab-type-label">${typeName}</div>
+        <div class="ab-block-name">${name}</div>
+      </div>
+      ${usage?`<div class="ab-usage">${usage}</div>`:''}
+    </div>
+    <div class="ab-block-body">${text.split('\n\n').map(t=>`<p>${t}</p>`).join('')}</div>`;
+  return div;
+}
+
+function makeNoShadowBlock(note){
+  const div=document.createElement('div');div.className='ab-block';
+  div.innerHTML=`
+    <div class="ab-block-head no-shadow">
+      <div class="ab-bigicon no-shadow">👁</div>
+      <div class="ab-title-col">
+        <div class="ab-type-label" style="color:var(--no-shadow)">Mask's Shadow</div>
+        <div class="ab-block-name" style="color:var(--no-shadow)">No Shadow</div>
+      </div>
+    </div>
+    <div class="ab-noshadow">${note}</div>`;
+  return div;
+}
+
+function closeModal(){document.getElementById('overlay').classList.remove('open');S.modal=null;}
+
+function toggleActive(){
+  if(!S.modal||S.modal.type!=='f') return;
+  const p=S.modal.item;
+  const wasActive=p.id===S.activePersona;
+  S.activePersona=wasActive?null:p.id;
+  renderGrid(); renderSidebar(); updateBadge();
+  openModal(p,'f');
+  toast(wasActive?`${p.archetype} deactivated.`:`${p.archetype} is now active.`);
+}
+
+function updateBadge(){
+  const badge=document.getElementById('active-badge');
+  const name=document.getElementById('badge-name');
+  if(S.activePersona){const p=PERSONAS.find(x=>x.id===S.activePersona);badge.classList.add('show');name.textContent=p.archetype;}
+  else badge.classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════
+// ── SIDEBAR DRAWER ───────────────────────────────────
+// ═══════════════════════════════════════════════════
+function openSidebar(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('active');}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('active');}
+
+// ═══════════════════════════════════════════════════
+// ── DARK MODE ────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function toggleDark(){
+  const isDark=document.documentElement.dataset.theme==='dark';
+  document.documentElement.dataset.theme=isDark?'light':'dark';
+  document.getElementById('dark-btn').textContent=isDark?'🌙':'☀️';
+  try{localStorage.setItem('vos2-theme',isDark?'light':'dark');}catch(e){}
+}
+function loadTheme(){
+  try{const t=localStorage.getItem('vos2-theme');if(t){document.documentElement.dataset.theme=t;if(t==='dark')document.getElementById('dark-btn').textContent='☀️';}}catch(e){}
+}
+
+// ═══════════════════════════════════════════════════
+// ── TOAST ────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ═══════════════════════════════════════════════════
+// ── INIT ─────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  loadTheme();
+  setTab('f');
+
+  document.querySelectorAll('.tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{ setTab(btn.dataset.tab); closeSidebar(); });
+  });
+
+  document.getElementById('dark-btn').addEventListener('click',toggleDark);
+  document.getElementById('mx').addEventListener('click',closeModal);
+  document.getElementById('m-close').addEventListener('click',closeModal);
+  document.getElementById('m-activate').addEventListener('click',toggleActive);
+  document.getElementById('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+  document.getElementById('menu-btn').addEventListener('click',openSidebar);
+  document.getElementById('sb-close').addEventListener('click',closeSidebar);
+  document.getElementById('sb-overlay').addEventListener('click',closeSidebar);
+});
+</script>
+</body>
+</html>
